@@ -1,5 +1,6 @@
 import 'package:anuplal/app/models/category_products.dart';
 import 'package:anuplal/app/widgets/custom_button_widget.dart';
+import 'package:anuplal/controller/home_screen_controller.dart';
 import 'package:anuplal/utils/dimensions.dart';
 import 'package:anuplal/utils/sizeboxes.dart';
 import 'package:anuplal/utils/styles.dart';
@@ -13,7 +14,8 @@ import '../../../services/api_services.dart';
 
 class HomeCategoryComponent extends StatelessWidget {
   final List<CategoryProducts> categoryProducts;
-  const HomeCategoryComponent({super.key, required this.categoryProducts});
+  final HomeScreenController homeScreenController;
+  const HomeCategoryComponent({super.key, required this.categoryProducts, required this.homeScreenController});
 
 
   @override
@@ -40,8 +42,9 @@ class HomeCategoryComponent extends StatelessWidget {
             itemCount: categoryProducts.length,
             itemBuilder: (context, i) {
               return GestureDetector(
-                onTap: () {
-                  Get.toNamed(RouteHelper.getProductDetailRoute());
+                onTap: () async {
+                 dynamic val = await homeScreenController.fetchParticularCategory(homeScreenController, categoryProducts[i].id.toString());
+
                 },
                 child: Column(crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

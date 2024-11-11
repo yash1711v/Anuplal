@@ -14,6 +14,8 @@ class HomeScreenController extends GetxController implements GetxService {
   List<PopularProduct> get products => _products;
   List<CategoryProducts> _categories = [];
   List<CategoryProducts> get categories => _categories;
+  List<PopularProduct> _particularCategoriesproducts = [];
+  List<PopularProduct> get particularCategoriesproducts => _particularCategoriesproducts;
 
   void setPopularProducts(List<PopularProduct> val) {
     _products = val;
@@ -23,12 +25,24 @@ class HomeScreenController extends GetxController implements GetxService {
     _categories = val;
     update();
   }
+  void Categoriesproducts(List<PopularProduct> val) {
+    _particularCategoriesproducts = val;
+    update();
+  }
 
 
   Future<void> fetchProducts(HomeScreenController controller) async {
     dynamic fetchedProducts = await apiService.fetchPopularProducts(controller);
     if(fetchedProducts) {
       _isLoading = false;
+    }
+  }
+  Future<bool> fetchParticularCategory(HomeScreenController controller, String id) async {
+    dynamic fetchedProducts = await apiService.fetchParticularCategoriesProducts(controller,id);
+    if(fetchedProducts) {
+      return true;
+    } else {
+      return false;
     }
   }
 

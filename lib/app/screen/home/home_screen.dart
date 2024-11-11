@@ -211,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Image.asset(Images.imgHomeShopNowBanner),
                     ),
                     sizedBoxDefault(),
-                    HomeCategoryComponent(categoryProducts: homeScreenController.categories,),
+                    HomeCategoryComponent(categoryProducts: homeScreenController.categories,homeScreenController: homeScreenController,),
                     sizedBox30(),
                     Padding(
                       padding: const EdgeInsets.symmetric(
