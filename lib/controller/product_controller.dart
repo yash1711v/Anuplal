@@ -15,15 +15,26 @@ class ProductController extends GetxController implements GetxService {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  final List<String> weightType = ['100 GM', '200 GM', '1 Kg', ];
+  int _thumbnailIndex = 0;
+  int get thumbnailIndex => _thumbnailIndex;
+
+   List<String> _weightType = [];
+  List<String> get weightType => _weightType;
+
+
   String _weightString = '';
   String get weightString => _weightString;
   void selectWeightString(String val) {
     _weightString = val;
     update();
   }
+  void setWeighttype(List<String> val) {
+    _weightType = val;
+    update();
+  }
 
-
-
-
+  void setIndex(int val) {
+    _thumbnailIndex = val;
+    update();
+  }
 }

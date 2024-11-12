@@ -35,7 +35,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: Dimensions.paddingSizeDefault),
               child: Column(
                 children: [
                   sizedBox30(),
@@ -53,15 +54,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                               children: [
                                 isBackButtonExist
                                     ? IconButton(
-                                  icon: const Icon(Icons.arrow_back),
-                                  color: Theme.of(context).primaryColor,
-                                  onPressed: () => Navigator.pop(context),
-                                )
+                                        icon: const Icon(Icons.arrow_back),
+                                        color: Theme.of(context).primaryColor,
+                                        onPressed: () {
+                                          if (onBackPressed != null) {
+                                            onBackPressed!();
+                                          } else {
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                      )
                                     : const SizedBox(width: 0, height: 0),
                                 Text(
                                   title!,
                                   style: poppinsMedium.copyWith(
-                                    color: Theme.of(context).secondaryHeaderColor,
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
                                     fontSize: Dimensions.fontSizeDefault,
                                   ),
                                 ),
@@ -72,7 +80,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                       if (menuWidget != null)
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: Dimensions.paddingSizeDefault),
                           child: menuWidget!,
                         ),
                     ],
@@ -91,5 +100,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(100); // Adjusted to match the expanded height
+  Size get preferredSize =>
+      const Size.fromHeight(100); // Adjusted to match the expanded height
 }

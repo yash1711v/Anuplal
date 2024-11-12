@@ -44,24 +44,41 @@ class HomeCategoryComponent extends StatelessWidget {
               return GestureDetector(
                 onTap: () async {
                  dynamic val = await homeScreenController.fetchParticularCategory(homeScreenController, categoryProducts[i].id.toString());
+                 debugPrint("val $val");
+                 if(val){
+                   Get.toNamed(RouteHelper.categoryProducts,);
+                 } else {}
+
 
                 },
-                child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.network("${ApiService().imageBaseUrl}${categoryProducts[i].thumbnail}",height: 70,),
-                    sizedBox4(),
-                    Text(textAlign: TextAlign.center,
-                        categoryProducts[i].name,
-                        style: poppinsMedium.copyWith(fontSize:Dimensions.fontSize14,
-                            color: Theme.of(context).hintColor))
-                  ],),
+                child: Container(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                          onTap: () async {
+                            dynamic val = await homeScreenController.fetchParticularCategory(homeScreenController, categoryProducts[i].id.toString());
+                            if(val){
+                              Get.toNamed(RouteHelper.categoryProducts);
+                            } else {
+                              Get.snackbar('Error', 'Something went wrong');
+                            }
+
+                          },
+                          child: Image.network("${ApiService().imageBaseUrl}${categoryProducts[i].thumbnail}",height: 70,)),
+                      sizedBox4(),
+                      Text(textAlign: TextAlign.center,
+                          categoryProducts[i].name,
+                          style: poppinsMedium.copyWith(fontSize:Dimensions.fontSize14,
+                              color: Theme.of(context).hintColor))
+                    ],),
+                ),
               );
             },),
-          SizedBox(height: 20,),
-          CustomButtonWidget(buttonText: 'View All Services',
-            onPressed: () {},
-            isBold: false,
-            transparent: true,)
+          // SizedBox(height: 20,),
+          // CustomButtonWidget(buttonText: 'View All Services',
+          //   onPressed: () {},
+          //   isBold: false,
+          //   transparent: true,)
 
         ],
       ),

@@ -31,7 +31,7 @@ class CustomProductWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Image.asset(
+              child: Image.network(
                 image,
                 width: 100,
                 height: 100,

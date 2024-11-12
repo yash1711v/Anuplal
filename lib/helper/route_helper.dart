@@ -62,7 +62,8 @@ class RouteHelper {
     GetPage(name: otpVerification, page: () =>  OtpVerificationScreen(phoneNo :Get.parameters['phoneNo'])),
     GetPage(name: dashboard, page: () =>  const DashboardScreen(pageIndex: 0)),
     GetPage(name: locationPick, page: () =>  LocationPickScreen()),
-    GetPage(name: categoryProducts, page: () =>  CategoryAllProductScreen()),
+
+    GetPage(name: categoryProducts, page: () =>  CategoryAllProductScreen(),),
     GetPage(name: productDetail, page: () =>  ProductDetailsScreen()),
     GetPage(name: profile, page: () =>  ProfileScreen()),
     GetPage(name: cropDoctor, page: () =>  CropDoctorScreen()),

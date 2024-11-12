@@ -1,5 +1,6 @@
 import 'package:anuplal/app/models/product_model.dart';
 import 'package:anuplal/app/widgets/custom_button_widget.dart';
+import 'package:anuplal/controller/home_screen_controller.dart';
 import 'package:anuplal/helper/route_helper.dart';
 import 'package:anuplal/utils/dimensions.dart';
 import 'package:anuplal/utils/sizeboxes.dart';
@@ -10,9 +11,10 @@ import 'package:get/get.dart';
 import '../../../services/api_services.dart';
 
 class RecommendedProduct extends StatelessWidget {
+  final HomeScreenController homeScreenController ;
   final List<PopularProduct> products;
 
-  RecommendedProduct({super.key, required this.products});
+  const RecommendedProduct({super.key, required this.products, required this.homeScreenController});
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +57,7 @@ class RecommendedProduct extends StatelessWidget {
              // debugPrint("${ApiService().imageBaseUrl}${product.thumbnail}");
               return GestureDetector(
                 onTap: () {
+                  homeScreenController.fetchParticularDetails(homeScreenController, product.id.toString());
                   Get.toNamed(RouteHelper.getProductDetailRoute());
                 },
                 child: Container(

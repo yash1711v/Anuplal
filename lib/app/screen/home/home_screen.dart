@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Image.asset(Images.imgHomeConsultNowBanner),
                     ),
                     sizedBoxDefault(),
-                    RecommendedProduct(products: homeScreenController.products,),
+                    RecommendedProduct(products: homeScreenController.products,homeScreenController: homeScreenController,),
                     sizedBoxDefault(),
                     Padding(
                       padding: const EdgeInsets.symmetric(
