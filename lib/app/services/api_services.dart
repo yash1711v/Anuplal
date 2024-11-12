@@ -2,13 +2,18 @@
 import 'dart:convert';
 import 'package:anuplal/app/models/category_products.dart';
 import 'package:anuplal/controller/home_screen_controller.dart';
+import 'package:anuplal/controller/orders_controller.dart';
+import 'package:anuplal/controller/profile_controller.dart';
 import 'package:anuplal/controller/store_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/orders_model.dart';
 import '../models/product_details.dart';
 import '../models/product_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+
+import '../models/profile_model.dart';
 
 class ApiService {
   final String imageBaseUrl = "https://anup.lab5.invoidea.in";
@@ -19,6 +24,8 @@ class ApiService {
       'https://anup.lab5.invoidea.in/api/product-details?product_id=';
   final String addToCart = "https://anup.lab5.invoidea.in/api/cart/store";
   final String  categoriesListing = "https://anup.lab5.invoidea.in/api/categories";
+  final String  profileDetails = "https://anup.lab5.invoidea.in/api/profile";
+  final String  myOrders = "https://anup.lab5.invoidea.in/api/orders";
 
   Future<bool> fetchPopularProducts(
       HomeScreenController homeScreenController) async {
@@ -109,7 +116,7 @@ class ApiService {
       "product_id": id,
     };
 debugPrint("addToCart $body");
-    final response = await http.post(Uri.parse('$addToCart'),body: jsonEncode(body), headers: headers);
+    final response = await http.post(Uri.parse(addToCart),body: jsonEncode(body), headers: headers);
     debugPrint("addToCart ${response.body}");
 
     // if (response.statusCode == 200) {
@@ -149,6 +156,81 @@ debugPrint("addToCart $body");
       } else {
         return false;
       }
+    } else {
+      throw Exception('Failed to load popular products');
+    }
+  }
+
+
+  Future<bool> fetchProfileDetails(
+      ProfileController profileScreenController) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = await prefs.get("token").toString();
+
+    dynamic headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer ${token}",
+    };
+
+    debugPrint("profileDetails $token");
+    final response = await http.get(Uri.parse(profileDetails),headers: headers);
+
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      User profile = User.fromJson(data['data']['user']);
+
+      profileScreenController.setProfile(profile);
+
+      if (profileScreenController.profile.id != 0) {
+        return true;
+      } else {
+        return false;
+      }
+
+
+      return true;
+    } else {
+      throw Exception('Failed to load popular products');
+    }
+  }
+
+  Future<bool> fetchMyOrders(
+      OrdersController orderScreenController) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = await prefs.get("token").toString();
+
+    dynamic headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer ${token}",
+    };
+
+    debugPrint("profileDetails $token");
+    final response = await http.get(Uri.parse(myOrders),headers: headers);
+
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      // Order order = Order.fromJson(data['data']['user']);
+      final List<dynamic> orderJson = data['data']['orders'];
+
+      debugPrint("orderJson $orderJson");
+      List<Order> order = orderJson
+          .map((orderJson) => Order.fromJson(orderJson))
+          .toList();
+
+      orderScreenController.setOrder(order);
+
+      if (orderScreenController.order.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+
+
+      return true;
     } else {
       throw Exception('Failed to load popular products');
     }

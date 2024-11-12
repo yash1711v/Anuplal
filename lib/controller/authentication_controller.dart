@@ -23,13 +23,13 @@ class LoginController extends GetxController {
       final response = await http.post(
         Uri.parse(_url),
         // headers: {'Content-Type': 'application/json',  'Authorization': '••••••'},
-        body: {'mobile': "7518141111",},
+        body: {'mobile': "7548141225",},
       );
 
       if (response.statusCode == 200) {
         loginResponse.value = jsonDecode(response.body);
         print('Login successful: ${loginResponse.value}');
-        CommonToast('Login successful');
+        CommonToast('Login successful: ${loginResponse.value['otp']}');
       } else {
         print('Failed to login: ${response.body}');
         CommonToast('Failed to login');
@@ -45,12 +45,12 @@ class LoginController extends GetxController {
   Future<void> otpVerify(String phone,String otp,) async {
     isLoading.value = true; // Show loading indicator
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     try {
       final response = await http.post(
         Uri.parse(_otpUrl),
         // headers: {'Content-Type': 'application/json',  'Authorization': '••••••'},
-        body: {'mobile': "7518141111", 'otp': otp},);
+        body: {'mobile': "7548141225", 'otp': otp},);
+
       if (response.statusCode == 200) {
         loginResponse.value = jsonDecode(response.body);
           prefs.setString('token', loginResponse.value['token']);

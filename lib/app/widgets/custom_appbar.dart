@@ -53,17 +53,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                             Row(
                               children: [
                                 isBackButtonExist
-                                    ? IconButton(
-                                        icon: const Icon(Icons.arrow_back),
-                                        color: Theme.of(context).primaryColor,
-                                        onPressed: () {
+                                    ? GestureDetector(
+                                        onTap: () {
                                           if (onBackPressed != null) {
                                             onBackPressed!();
                                           } else {
                                             Navigator.pop(context);
                                           }
                                         },
-                                      )
+                                      child: Icon(
+                                         Icons.arrow_back,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                    )
                                     : const SizedBox(width: 0, height: 0),
                                 Text(
                                   title!,

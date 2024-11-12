@@ -32,45 +32,50 @@ class _StoreScreenState extends State<StoreScreen> {
       if (storeController.categories.isEmpty) {
         return const Center(child: CircularProgressIndicator());
       }
-      return Scaffold(
-        appBar: CustomAppBar(title: 'Stores', menuWidget: Row(
-          children: [
-            CustomNotificationButton(tap: () {},),
-            sizedBoxW10(),
-            CustomCartButton(tap: () {},)
-          ],
-        ),),
-        body: SingleChildScrollView(
-          child: Column(children: [
-            sizedBoxDefault(),
-            for(int i = 0; i < storeController.categories.length; i++)
-              GetBuilder<HomeScreenController>(builder: (homeScreenController) =>
-         HorizontalProductWidget(
-                  sectionTitle: storeController.categories[i].name,
-                  imgList: [
-                    'assets/images/img_product_demo.png',
-                    'assets/images/img_product_demo.png',
-                    'assets/images/img_product_demo.png'
-                  ],
-                  titleList: ['Seeds', 'Nutrients', 'Seeds',],
-                  weightList: ['100 gm', '200 gm', '200 gm'],
-                  priceList: ['40', '80', '80'],
-                  productTap: () {
-                    Get.toNamed(RouteHelper.getProductDetailRoute());
-                  },
-                  seeAllTap: () async {
-                    dynamic val = await homeScreenController.fetchParticularCategory(homeScreenController, storeController.categories[i].id.toString());
-                    debugPrint("val $val");
-                    if(val){
-                      Get.toNamed(RouteHelper.categoryProducts,);
-                    } else {}
-                  },
+      return SafeArea(
+        child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(80),
+            child: CustomAppBar(title: 'Stores', menuWidget: Row(
+              children: [
+                CustomNotificationButton(tap: () {},),
+                sizedBoxW10(),
+                CustomCartButton(tap: () {},)
+              ],
+            ),),
+          ),
+          body: SingleChildScrollView(
+            child: Column(children: [
+              sizedBoxDefault(),
+              for(int i = 0; i < storeController.categories.length; i++)
+                GetBuilder<HomeScreenController>(builder: (homeScreenController) =>
+           HorizontalProductWidget(
+                    sectionTitle: storeController.categories[i].name,
+                    imgList: [
+                      'assets/images/img_product_demo.png',
+                      'assets/images/img_product_demo.png',
+                      'assets/images/img_product_demo.png'
+                    ],
+                    titleList: ['Seeds', 'Nutrients', 'Seeds',],
+                    weightList: ['100 gm', '200 gm', '200 gm'],
+                    priceList: ['40', '80', '80'],
+                    productTap: () {
+                      Get.toNamed(RouteHelper.getProductDetailRoute());
+                    },
+                    seeAllTap: () async {
+                      dynamic val = await homeScreenController.fetchParticularCategory(homeScreenController, storeController.categories[i].id.toString());
+                      debugPrint("val $val");
+                      if(val){
+                        Get.toNamed(RouteHelper.categoryProducts,);
+                      } else {}
+                    },
+                  ),
                 ),
-              ),
-            sizedBox100(),
-
-
-          ],
+              sizedBox100(),
+        
+        
+            ],
+            ),
           ),
         ),
       );

@@ -1,4 +1,5 @@
 
+import 'package:anuplal/app/screen/MyOrdersScreen/my_orders.dart';
 import 'package:anuplal/app/screen/account/crop_doctor.dart';
 import 'package:anuplal/app/screen/dashboard/dashboard_screen.dart';
 import 'package:anuplal/app/screen/onboard/location_pick_screen.dart';
@@ -30,6 +31,7 @@ class RouteHelper {
   static const String profile = '/profile';
   static const String cropDoctor = '/crop-doctor';
   static const String cart= '/cart';
+  static const String myOrders= '/myOrders';
   static const String ContactUs= '/ContactUs';
   static const String Notification= '/notification';
   static const String  Signup= '/Signup';
@@ -49,6 +51,7 @@ class RouteHelper {
   static String getProfileRoute() => profile;
   static String getCropDoctorRoute() => cropDoctor;
   static String getCartRoute() => cart;
+  static String getmyOrdersRoute() => myOrders;
   static String getContactUsRoute() => ContactUs;
   static String getNotificationRoute() => Notification;
   static String getSignUpRoute() => Signup;
@@ -64,6 +67,7 @@ class RouteHelper {
     GetPage(name: locationPick, page: () =>  LocationPickScreen()),
 
     GetPage(name: categoryProducts, page: () =>  CategoryAllProductScreen(),),
+    GetPage(name: myOrders, page: () =>  MyOrders(),),
     GetPage(name: productDetail, page: () =>  ProductDetailsScreen()),
     GetPage(name: profile, page: () =>  ProfileScreen()),
     GetPage(name: cropDoctor, page: () =>  CropDoctorScreen()),

@@ -9,22 +9,24 @@ class CommunityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Community',menuWidget: Row(
-        children: [
-          CustomNotificationButton(tap: () {  },),
-          sizedBoxW10(),
-          CustomCartButton(tap: () {  },)
-        ],
-      ),),
-      body: SingleChildScrollView(
-        child: ListView.builder(
-          itemCount: 6,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (_,i) {
-          return const PostComponent();
-        }),
+    return SafeArea(
+      child: Scaffold(
+        appBar: CustomAppBar(title: 'Community',menuWidget: Row(
+          children: [
+            CustomNotificationButton(tap: () {  },),
+            sizedBoxW10(),
+            CustomCartButton(tap: () {  },)
+          ],
+        ),),
+        body: SingleChildScrollView(
+          child: ListView.builder(
+            itemCount: 6,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (_,i) {
+            return const PostComponent();
+          }),
+        ),
       ),
     );
   }

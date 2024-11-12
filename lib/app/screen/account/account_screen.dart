@@ -7,53 +7,60 @@ import 'package:anuplal/utils/sizeboxes.dart';
 import 'package:anuplal/utils/styles.dart';
 import 'package:flutter/material.dart';
 
+import '../MyOrdersScreen/my_orders.dart';
+
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Account',
-        menuWidget: Row(
-          children: [
-            CustomNotificationButton(tap: () {}),
-            sizedBoxW10(),
-            CustomCartButton(tap: () {}),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: CustomAppBar(
+          title: 'Account',
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              sizedBoxDefault(),
-              buildColumn(
-                tap: () {
-                  Get.toNamed(RouteHelper.getProfileRoute());
-                },
-                title: 'Profile',
-              ),
-              buildColumn(tap: () {}, title: 'My Orders'),
-              buildColumn(tap: () {
-                Get.toNamed(RouteHelper.getCartRoute());
-              }, title: 'Cart'),
-              buildColumn(tap: () {
-                Get.toNamed(RouteHelper.getNotificationRoute());
-              }, title: 'Notifications'),
-              buildColumn(tap: () {
-                Get.toNamed(RouteHelper.getCropDoctorRoute());
-
-              }, title: 'Crop Doctor'),
-              buildColumn(tap: () {}, title: 'Location'),
-              buildColumn(tap: () {
-                Get.toNamed(RouteHelper.getContactUsRoute());
-
-              }, title: 'Contact Us'),
-              buildColumn(tap: () {}, title: 'Privacy Policy'),
-            ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                sizedBoxDefault(),
+                buildColumn(
+                  tap: () {
+                    Get.toNamed(RouteHelper.getProfileRoute());
+                  },
+                  title: 'Profile',
+                ),
+               SizedBox(height: 26),
+                buildColumn(tap: () {
+                  Get.toNamed(RouteHelper.getmyOrdersRoute());
+                  }, title: 'My Orders'),
+                SizedBox(height: 26),
+                buildColumn(tap: () {
+                  Get.toNamed(RouteHelper.getCartRoute());
+                }, title: 'Cart'),
+                SizedBox(height: 26),
+                buildColumn(tap: () {
+                  Get.toNamed(RouteHelper.getNotificationRoute());
+                }, title: 'Notifications'),
+                SizedBox(height: 26),
+                buildColumn(tap: () {
+                  Get.toNamed(RouteHelper.getCropDoctorRoute());
+      
+                }, title: 'Crop Doctor'),
+                SizedBox(height: 26),
+                buildColumn(tap: () {}, title: 'Location'),
+                SizedBox(height: 26),
+                buildColumn(tap: () {
+                  Get.toNamed(RouteHelper.getContactUsRoute());
+      
+                }, title: 'Contact Us'),
+                SizedBox(height: 26),
+                buildColumn(tap: () {}, title: 'Privacy Policy'),
+              ],
+            ),
           ),
         ),
       ),

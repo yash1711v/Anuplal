@@ -30,46 +30,51 @@ class CategoryAllProductScreen extends StatelessWidget {
             body: const Center(child: Text("No Products Found")));
       }
 
-      return Scaffold(
-        appBar: CustomAppBar(
-          isBackButtonExist: true,
-          title: homeScreenController.categoryName, menuWidget: Row(
-          children: [
-            CustomNotificationButton(tap: () {},),
-            sizedBoxW10(),
-            CustomCartButton(tap: () {},)
-          ],
-        ),),
-        body: SingleChildScrollView(
-          child: GridView.builder(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-                mainAxisExtent: 240
-              // childAspectRatio: 0.7,
-            ),
-            itemCount: homeScreenController.particularCategoriesproducts.length,
-            itemBuilder: (context, i) {
-              return CustomProductWidget(
-                  productTap: () {
-                    homeScreenController.fetchParticularDetails(homeScreenController, homeScreenController.particularCategoriesproducts[i].id.toString());
-                    Get.toNamed(RouteHelper.getProductDetailRoute());
-                  },
-                  image: "${ApiService().imageBaseUrl}${ homeScreenController.particularCategoriesproducts[i].thumbnail}",
-                  title: homeScreenController.particularCategoriesproducts[i]
-                      .name,
-                  weight: homeScreenController.particularCategoriesproducts[i]
-                      .quantity.toString(),
-                  price: homeScreenController.particularCategoriesproducts[i]
-                      .price.toString(),
-                  addCartTap: () {});
-            },),
+      return SafeArea(
+        child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(125),
+            child: CustomAppBar(
+              isBackButtonExist: true,
+              title: homeScreenController.categoryName, menuWidget: Row(
+              children: [
+                CustomNotificationButton(tap: () {},),
+                sizedBoxW10(),
+                CustomCartButton(tap: () {},)
+              ],
+            ),),
+          ),
+          body: SingleChildScrollView(
+            child: GridView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
+                  mainAxisExtent: 240
+                // childAspectRatio: 0.7,
+              ),
+              itemCount: homeScreenController.particularCategoriesproducts.length,
+              itemBuilder: (context, i) {
+                return CustomProductWidget(
+                    productTap: () {
+                      homeScreenController.fetchParticularDetails(homeScreenController, homeScreenController.particularCategoriesproducts[i].id.toString());
+                      Get.toNamed(RouteHelper.getProductDetailRoute());
+                    },
+                    image: "${ApiService().imageBaseUrl}${ homeScreenController.particularCategoriesproducts[i].thumbnail}",
+                    title: homeScreenController.particularCategoriesproducts[i]
+                        .name,
+                    weight: homeScreenController.particularCategoriesproducts[i]
+                        .quantity.toString(),
+                    price: homeScreenController.particularCategoriesproducts[i]
+                        .price.toString(),
+                    addCartTap: () {});
+              },),
+          ),
+        
         ),
-
       );
     });
   }
