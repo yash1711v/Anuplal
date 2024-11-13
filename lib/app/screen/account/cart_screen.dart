@@ -6,14 +6,43 @@ import '../../widgets/custom_appbar.dart';
 import '../../widgets/custom_cart_widget.dart';
 import 'package:get/get.dart';
 
-
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  HomeScreenController homeScreenController = Get.put(HomeScreenController());
+  ApiService apiService = ApiService();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    homeScreenController.addToCartListing([]);
+    apiService.FetchcartListing(homeScreenController);
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: GetBuilder<HomeScreenController>(builder: (homeScreenController) {
+        if(homeScreenController.shopModel.isEmpty){
+          return const Scaffold(
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(125),
+              child: CustomAppBar(
+                title: 'Cart',
+                isBackButtonExist: true,
+              ),
+            ),
+            body: Center(
+              child: Text("No items in cart"),
+            ),
+          );
+        }
         return Scaffold(
           appBar: const PreferredSize(
             preferredSize: Size.fromHeight(125),
@@ -26,23 +55,28 @@ class CartScreen extends StatelessWidget {
             padding: const EdgeInsets.all(10.0),
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: homeScreenController.shopModel[0].products.length,
+              itemCount: homeScreenController.shopModel[0].products!.length,
               itemBuilder: (context, index) {
+                debugPrint(homeScreenController
+                    .shopModel[0].products![index].quantity
+                    .toString());
                 return Column(
                   children: [
                     CartItemContainer(
-                      imagePath: '${ApiService().imageBaseUrl}${
-                        homeScreenController
-                            .shopModel[0].products[index].thumbnail
-                      }',
-                      productName: homeScreenController.shopModel[0].products[index].name,
-                      quantity: homeScreenController.shopModel[0].products[index].quantity,
-                      price: homeScreenController.shopModel[0].products[index].price,
+                      imagePath:
+                          '${ApiService().imageBaseUrl}${homeScreenController.shopModel[0].products![index].thumbnail}',
+                      productName: homeScreenController
+                          .shopModel[0].products![index].name,
+                      quantity: homeScreenController
+                          .shopModel[0].products![index].quantity,
+                      price: homeScreenController
+                          .shopModel[0].products![index].price,
+                      id: homeScreenController.shopModel[0].products![index].id
+                          .toString(), homeScreenController: homeScreenController,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                   ],
                 );
-
               },
             ),
           ),

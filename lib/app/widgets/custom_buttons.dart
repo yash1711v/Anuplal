@@ -2,6 +2,7 @@ import 'package:anuplal/utils/images.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/home_screen_controller.dart';
+import '../../helper/route_helper.dart';
 
 class CustomNotificationButton extends StatelessWidget {
   final Function() tap;
@@ -21,7 +22,9 @@ class CustomCartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(onTap: tap,
+    return GestureDetector(onTap: (){
+      Get.toNamed(RouteHelper.getCartRoute());
+    },
         child: Stack(
           children: [
             Image.asset(Images.icCart,height: 30,width: 30,),

@@ -70,7 +70,7 @@ class ProductDetailsScreen extends StatelessWidget {
                   sizedBoxW10(),
                   CustomCartButton(
                     tap: () {
-                      Get.toNamed(RouteHelper.getCartRoute());
+
                     },
                   )
                 ],

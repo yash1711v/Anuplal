@@ -4,7 +4,7 @@ class ShopModel {
   final String shopLogo;
   final double shopRating;
   final bool hasGift;
-  final List<ProductModel> products;
+  final List<ProductModel>? products;
 
   ShopModel({
     required this.shopId,
@@ -37,7 +37,7 @@ class ShopModel {
       'shop_logo': shopLogo,
       'shop_rating': shopRating,
       'has_gift': hasGift,
-      'products': products.map((product) => product.toJson()).toList(),
+      'products': products!.map((product) => product.toJson()).toList(),
     };
   }
 }
@@ -54,7 +54,7 @@ class ProductModel {
   final double rating;
   final String totalReviews;
   final String totalSold;
-  final String color;
+  final String? color;
   final String? size;
   final String? unit;
   final String? gift;

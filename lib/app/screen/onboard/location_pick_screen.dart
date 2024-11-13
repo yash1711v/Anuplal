@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:anuplal/app/services/api_services.dart';
 import 'package:anuplal/app/widgets/custom_button_widget.dart';
 import 'package:anuplal/helper/route_helper.dart';
 import 'package:anuplal/utils/dimensions.dart';
@@ -7,86 +10,217 @@ import 'package:anuplal/utils/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-class LocationPickScreen extends StatelessWidget {
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+
+import '../../../controller/profile_controller.dart';
+import '../../models/profile_model.dart';
+import '../../widgets/custom_appbar.dart';
+import '../../widgets/custom_network_image.dart';
+import '../../widgets/underline_textfield.dart';
+
+class LocationPickScreen extends StatefulWidget {
   const LocationPickScreen({super.key});
 
   @override
+  State<LocationPickScreen> createState() => _LocationPickScreenState();
+}
+
+class _LocationPickScreenState extends State<LocationPickScreen> {
+  final _usernameController = TextEditingController();
+
+  final _emailController = TextEditingController();
+
+  final _phoneController = TextEditingController();
+
+  final _deliveryController = TextEditingController();
+
+  ProfileController profileController = Get.put(ProfileController());
+
+  Future<void> _setInitialLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled, you may want to handle this
+      return;
+    }
+
+    // Check for location permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
+        return;
+      }
+    }
+
+    // Get current location
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    _getAddressFromLatLng(position);
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      Placemark place = placemarks[0];
+      setState(() {
+        _deliveryController.text =
+            "${place.street}, ${place.locality}, ${place.country}";
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _setInitialLocation();
+    profileController.getProfileInfo(profileController);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-            child: Center(
-              child: Column(mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+    return GetBuilder<ProfileController>(builder: (profileScreenController) {
+      if (profileScreenController.profile.phone.isEmpty &&
+          _deliveryController.text.isEmpty) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      _usernameController.text = profileScreenController.profile.name;
+      _phoneController.text = profileScreenController.profile.phone;
+
+      return SafeArea(
+        child: Scaffold(
+          appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(125),
+            child: CustomAppBar(
+              title: 'Register',
+              isBackButtonExist: false,
+            ),
+          ),
+          body: SingleChildScrollView(
+              child: GetBuilder<ProfileController>(builder: (profileControl) {
+            return Padding(
+              padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+              child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(Dimensions.paddingSize20),
-                    child: Image.asset(Images.imgPickLocation),
-                  ),
-                  sizedBox40(),
-                  CustomButtonWidget(
-                    isBold: false,
-                    buttonText: " Use Current Location",
-                    gradient: const LinearGradient(
-                      colors: [Color(0xff739a2b), Color(0xff4c5829)],
-                      stops: [0.2, 1],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
+                  sizedBox20(),
+                  Center(
+                    child: Container(
+                      height: 150,
+                      width: 150,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          width: 0.5,
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(0.40),
+                        ),
+                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                      ),
+                      // alignment: Alignment.center,
+                      child: profileControl.pickedImage != null
+                          ? Image.file(
+                              File(
+                                profileControl.pickedImage!.path,
+                              ),
+                              height: 90,
+                              width: 90,
+                              fit: BoxFit.cover,
+                            )
+                          : Stack(
+                              children: [
+                                Container(
+                                    height: 150,
+                                    width: 150,
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(0.1),
+                                    ),
+                                    child: const CustomNetworkImageWidget(
+                                      imagePadding: Dimensions.paddingSize40,
+                                      height: 150,
+                                      width: 150,
+                                      image: '',
+                                      placeholder: Images.icGallery,
+                                      fit: BoxFit.cover,
+                                    )),
+                                // Image.asset(Images.profilePlaceholder,)
+                              ],
+                            ),
                     ),
-                    useGradient: true,
-                    icon: Icons.my_location,
-                    onPressed: () {
-                      Get.toNamed(RouteHelper.getDashboardRoute());
-                    },
                   ),
                   sizedBoxDefault(),
-                  CustomButtonWidget(
-                    isBold: false,
-                    buttonText: " Search Location Manually",
-                    transparent: true,
-                    icon: CupertinoIcons.search,
-                    onPressed: () {
-                      Get.toNamed(RouteHelper.getDashboardRoute());
-                    },
+                  TextFieldWidget(
+                    hintText: 'Name',
+                    controller: _usernameController,
                   ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: TextButton(onPressed: () {
-                      Get.toNamed(RouteHelper.getDashboardRoute());
+                  TextFieldWidget(
+                    hintText: 'Email Address',
+                    controller: _emailController,
+                  ),
+
+                  TextFieldWidget(
+                    onPress: () {
+                      // Get.to(() => MapScreen());
                     },
-                        child: Text('Skip >',style: poppinsMedium.copyWith(fontSize: Dimensions.fontSize14,
-                            color: Theme.of(context).disabledColor.withOpacity(0.70)),)),
-                  )
+                    isReadOnly: true,
+                    hintText: 'Delivery location',
+                    controller: _deliveryController,
+                    suffix: Icon(
+                      Icons.location_on_sharp,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
                 ],
+              ),
+            );
+          })),
+          bottomNavigationBar: Padding(
+            padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+            child: SingleChildScrollView(
+              child: CustomButtonWidget(
+                buttonText: 'Save',
+                onPressed: () {
+                  User user = User(
+                    id: profileScreenController.profile.id,
+                    phone: _phoneController.text,
+                    email: _emailController.text,
+                    name: _usernameController.text,
+                    phoneVerified: true,
+                    emailVerified: true,
+                    isActive: true,
+                    profilePhoto: '',
+                    dateOfBirth: '',
+                    country: '',
+                    phoneCode: '',
+                  );
+                  dynamic val = ApiService().updateProfileApi(profileScreenController,user);
+                  if(val != null){
+                    Get.toNamed(RouteHelper.dashboard);
+                  } else {
+
+                  }
+                  // Get.back();
+                },
               ),
             ),
           ),
-          Positioned(top:0,
-          child  : Container(
-              width: Get.size.width,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).disabledColor.withOpacity(0.08),
-                  borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(Dimensions.radius30)
-                  )
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault,
-                  vertical: Dimensions.paddingSize40),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('SET YOUR LOCATION',style: poppinsSemiBold.copyWith(fontSize: Dimensions.fontSize20,
-                      color: Theme.of(context).primaryColor),),
-                  Text('You can change it later',style: poppinsRegular.copyWith(fontSize: Dimensions.fontSize14,
-                      color: Theme.of(context).hintColor),),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 }

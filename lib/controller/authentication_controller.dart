@@ -23,7 +23,7 @@ class LoginController extends GetxController {
       final response = await http.post(
         Uri.parse(_url),
         // headers: {'Content-Type': 'application/json',  'Authorization': '••••••'},
-        body: {'mobile': "7548141225",},
+        body: {'phone': "7548141225",},
       );
 
       if (response.statusCode == 200) {
@@ -49,7 +49,7 @@ class LoginController extends GetxController {
       final response = await http.post(
         Uri.parse(_otpUrl),
         // headers: {'Content-Type': 'application/json',  'Authorization': '••••••'},
-        body: {'mobile': "7548141225", 'otp': otp},);
+        body: {'phone': "7548141225", 'otp': otp},);
 
       if (response.statusCode == 200) {
         loginResponse.value = jsonDecode(response.body);

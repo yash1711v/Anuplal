@@ -19,6 +19,7 @@ class Images {
   static const String icComment = 'assets/icons/ic_comment.png';
   static const String icSeeds = 'assets/icons/ic_seeds.png';
   static const String icGallery = 'assets/icons/ic_gallery.png';
+  static const String icGallery2 = 'assets/icons/addImage.png';
   static const String icCropDoctor = 'assets/images/img_crop_doctor.png';
 
 

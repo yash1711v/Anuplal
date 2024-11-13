@@ -45,4 +45,9 @@ class ProfileController extends GetxController implements GetxService {
     _profile = user;
     update();
   }
+
+  Future<void> UpdateProfileInfo(ProfileController profile) async {
+    dynamic fetchedProducts = await apiService.fetchProfileDetails(profile);
+  }
+
 }

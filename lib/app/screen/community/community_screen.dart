@@ -12,14 +12,16 @@ class CommunityScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(125),
+          preferredSize: const Size.fromHeight(140),
           child: CustomAppBar(title: 'Community',menuWidget: Row(
             children: [
               CustomNotificationButton(tap: () {  },),
               sizedBoxW10(),
-              CustomCartButton(tap: () {  },)
+              CustomCartButton(tap: () {  },),
             ],
-          ),),
+          ),
+          isPostButtonExist: true,
+          ),
         ),
         body: SingleChildScrollView(
           child: ListView.builder(

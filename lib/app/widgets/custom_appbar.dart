@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import '../../utils/dimensions.dart';
 import '../../utils/images.dart';
 import '../../utils/sizeboxes.dart';
+import '../screen/PostInformation/post_information.dart';
+import 'package:get/get.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final bool isBackButtonExist;
+  final bool? isPostButtonExist;
   final Function? onBackPressed;
   final Widget? menuWidget;
 
@@ -15,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.onBackPressed,
     this.isBackButtonExist = false,
-    this.menuWidget,
+    this.menuWidget, this.isPostButtonExist,
   }) : super(key: key);
 
   @override
@@ -98,6 +101,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       fontSize: Dimensions.fontSizeDefault,
                                     ),
                                   ),
+                                  Spacer(),
+                                  Visibility(
+                                    visible: isPostButtonExist ?? false,
+                                    child: Container(
+                                      width: 100,
+                                      height: 40,
+                                      child: ElevatedButton(onPressed: (){
+                                        Get.to(() => PostInformation());
+                                      }, child: Text("Add Post")),
+                                    ),
+                                  )
                                 ],
                               ),
                             ),

@@ -15,6 +15,8 @@ import 'package:get/get.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../models/profile_model.dart';
+import '../../services/api_services.dart';
 import '../MapsScreen/maps_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -95,19 +97,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
       _usernameController.text = profileScreenController.profile.name;
       _phoneController.text = profileScreenController.profile.phone;
+      _emailController.text = profileScreenController.profile.email!;
 
       return SafeArea(
         child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(125),
-            child: CustomAppBar(title: 'Account', isBackButtonExist: true,
-              menuWidget: Row(
-                children: [
-                  CustomNotificationButton(tap: () {},),
-                  sizedBoxW10(),
-                  CustomCartButton(tap: () {},)
-                ],
-              ),),
+          appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(125),
+            child: CustomAppBar(title: 'Account', isBackButtonExist: true,),
           ),
           body: SingleChildScrollView(
               child: GetBuilder<ProfileController>(builder: (profileControl) {
@@ -169,8 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         hintText: 'Username', controller: _usernameController,),
                       TextFieldWidget(
                         hintText: 'Email Address', controller: _emailController,),
-                      TextFieldWidget(
-                        hintText: 'Phone Number', controller: _phoneController,),
+
                       TextFieldWidget(
                         onPress: () {
                           // Get.to(() => MapScreen());
@@ -192,7 +187,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: SingleChildScrollView(
               child: CustomButtonWidget(buttonText: 'Save',
                 onPressed: () {
-                  Get.back();
+                  User user = User(
+                    id: profileScreenController.profile.id,
+                    phone: _phoneController.text,
+                    email: _emailController.text,
+                    name: _usernameController.text,
+                    phoneVerified: true,
+                    emailVerified: true,
+                    isActive: true,
+                    profilePhoto: '',
+                    dateOfBirth: '',
+                    country: '',
+                    phoneCode: '',
+                  );
+                  dynamic val = ApiService().updateProfileApi(profileScreenController,user);
+                  // Get.back();
                 },),
             ),
           ),

@@ -15,6 +15,8 @@ class TextFieldWidget extends StatelessWidget {
   final bool? enable;
   final bool? obscureText;
   final int? maxLine;
+  final int? maxLength;
+
   final TextInputType? textInputType;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validation;
@@ -34,7 +36,7 @@ class TextFieldWidget extends StatelessWidget {
     this.inputFormatters,
     this.obscureText,
     this.onChanged,
-    this.validation, this.isReadOnly,
+    this.validation, this.isReadOnly, this.maxLength,
   });
 
   @override
@@ -74,6 +76,7 @@ class TextFieldWidget extends StatelessWidget {
             onChanged: onChanged,
             style: poppinsRegular,
             readOnly: isReadOnly ?? false,
+            maxLength: maxLength,
             decoration: InputDecoration(
               errorStyle: const TextStyle(color: Colors.red),
               isDense: true,
