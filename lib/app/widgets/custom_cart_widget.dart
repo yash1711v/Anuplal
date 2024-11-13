@@ -29,7 +29,7 @@ class CartItemContainer extends StatelessWidget {
       padding: const EdgeInsets.all(0.0),
       child: Row(
         children: [
-          Image.asset(imagePath, width: 90, height: 100), // Adjust as needed
+          Image.network(imagePath, width: 90, height: 100), // Adjust as needed
           const SizedBox(width: 10),
           Expanded(
             child: Column(

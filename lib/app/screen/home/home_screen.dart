@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     homeScreenController.fetchProducts(homeScreenController);
+    apiService.FetchcartListing(homeScreenController);
     WidgetsBinding.instance.addPostFrameCallback((_) {
     });
   }
@@ -129,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Row(
                                     children: [
                                       Image.asset(Images.icCart,
-                                        height: Dimensions.fontSize24,),
+                                        height: Dimensions.fontSize30,),
                                       sizedBoxW15(),
                                       Image.asset(Images.icNotification,
                                         height: Dimensions.fontSize24,),

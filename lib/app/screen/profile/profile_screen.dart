@@ -12,6 +12,10 @@ import 'package:anuplal/utils/images.dart';
 import 'package:anuplal/utils/sizeboxes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+
+import '../MapsScreen/maps_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
    ProfileScreen({super.key});
@@ -28,12 +32,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
    final _phoneController = TextEditingController();
 
    final _deliveryController = TextEditingController();
+
   ProfileController profileController = Get.put(ProfileController());
+
+  Future<void> _setInitialLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled, you may want to handle this
+      return;
+    }
+
+    // Check for location permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
+        return;
+      }
+    }
+
+    // Get current location
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    _getAddressFromLatLng(position);
+  }
+
+    Future<void> _getAddressFromLatLng(Position position) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      Placemark place = placemarks[0];
+      setState(() {
+        _deliveryController.text = "${place.street}, ${place.locality}, ${place.country}";
+      });
+
+    } catch (e) {
+      print(e);
+    }
+  }
+
 
    @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _setInitialLocation();
     profileController.getProfileInfo(profileController);
 
   }
@@ -41,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(builder: (profileScreenController) {
-      if (profileScreenController.profile.phone.isEmpty) {
+      if (profileScreenController.profile.phone.isEmpty && _deliveryController.text.isEmpty) {
         return const Center(child: CircularProgressIndicator());
       }
       _usernameController.text = profileScreenController.profile.name;
@@ -122,7 +171,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         hintText: 'Email Address', controller: _emailController,),
                       TextFieldWidget(
                         hintText: 'Phone Number', controller: _phoneController,),
-                      TextFieldWidget(hintText: 'Delivery location',
+                      TextFieldWidget(
+                        onPress: () {
+                          // Get.to(() => MapScreen());
+                        },
+                        isReadOnly: true,
+                        hintText: 'Delivery location',
                         controller: _deliveryController,
                         suffix: Icon(Icons.location_on_sharp, color: Theme
                             .of(context)

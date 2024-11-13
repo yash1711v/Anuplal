@@ -35,7 +35,7 @@ class _StoreScreenState extends State<StoreScreen> {
       return SafeArea(
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(80),
+            preferredSize: const Size.fromHeight(125),
             child: CustomAppBar(title: 'Stores', menuWidget: Row(
               children: [
                 CustomNotificationButton(tap: () {},),

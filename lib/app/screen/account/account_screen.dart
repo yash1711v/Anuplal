@@ -16,8 +16,11 @@ class AccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: CustomAppBar(
-          title: 'Account',
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(125),
+          child: CustomAppBar(
+            title: 'Account',
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(

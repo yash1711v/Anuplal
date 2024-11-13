@@ -18,6 +18,7 @@ class TextFieldWidget extends StatelessWidget {
   final TextInputType? textInputType;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validation;
+  final bool? isReadOnly;
 
   const TextFieldWidget({
     super.key,
@@ -33,7 +34,7 @@ class TextFieldWidget extends StatelessWidget {
     this.inputFormatters,
     this.obscureText,
     this.onChanged,
-    this.validation,
+    this.validation, this.isReadOnly,
   });
 
   @override
@@ -72,6 +73,7 @@ class TextFieldWidget extends StatelessWidget {
             validator: validation,
             onChanged: onChanged,
             style: poppinsRegular,
+            readOnly: isReadOnly ?? false,
             decoration: InputDecoration(
               errorStyle: const TextStyle(color: Colors.red),
               isDense: true,

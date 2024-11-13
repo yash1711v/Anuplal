@@ -5,7 +5,9 @@ import 'package:anuplal/utils/sizeboxes.dart';
 import 'package:anuplal/utils/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // Assuming you are using GetX for navigation
+import 'package:get/get.dart';
+
+import '../../NearestStore/nearest_store.dart'; // Assuming you are using GetX for navigation
 
 class OurServicesComponent extends StatelessWidget {
   OurServicesComponent({super.key});
@@ -66,7 +68,7 @@ class OurServicesComponent extends StatelessWidget {
                       break;
                     case 3:
                     // Navigate to Nearest Store
-                      Get.toNamed('/nearestStore');
+                      Get.to(const NearestStore());
                       break;
                     case 4:
                     // Navigate to Soil Testing

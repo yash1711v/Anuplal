@@ -49,43 +49,61 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Image.asset(Images.logo, width: 140),
                             Row(
                               children: [
-                                isBackButtonExist
-                                    ? GestureDetector(
-                                        onTap: () {
-                                          if (onBackPressed != null) {
-                                            onBackPressed!();
-                                          } else {
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                      child: Icon(
-                                         Icons.arrow_back,
-                                          color: Theme.of(context).primaryColor,
-                                        ),
-                                    )
-                                    : const SizedBox(width: 0, height: 0),
-                                Text(
-                                  title!,
-                                  style: poppinsMedium.copyWith(
-                                    color:
-                                        Theme.of(context).secondaryHeaderColor,
-                                    fontSize: Dimensions.fontSizeDefault,
+                                Image.asset(Images.logo, width: 140),
+                                Spacer(),
+                                if (menuWidget != null)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: Dimensions.paddingSizeDefault),
+                                    child: menuWidget!,
                                   ),
-                                ),
                               ],
+                            ),
+                            SizedBox(height: 5),
+                            GestureDetector(
+                              onTap: () {
+                                if (onBackPressed != null) {
+                                  onBackPressed!();
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  isBackButtonExist
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            if (onBackPressed != null) {
+                                              onBackPressed!();
+                                            } else {
+                                              Navigator.pop(context);
+                                            }
+                                          },
+                                        child: Icon(
+                                           Icons.arrow_back,
+                                            color: Theme.of(context).primaryColor,
+                                          ),
+                                      )
+                                      : const SizedBox(width: 0, height: 0),
+                                  isBackButtonExist
+                                      ? SizedBox(width: 10,)
+                                      : const SizedBox(width: 0, height: 0),
+                                  Text(
+                                    title!,
+                                    style: poppinsMedium.copyWith(
+                                      color:
+                                          Theme.of(context).secondaryHeaderColor,
+                                      fontSize: Dimensions.fontSizeDefault,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      if (menuWidget != null)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: Dimensions.paddingSizeDefault),
-                          child: menuWidget!,
-                        ),
                     ],
                   ),
                 ],

@@ -10,9 +10,12 @@ import 'package:anuplal/utils/sizeboxes.dart';
 import 'package:flutter/material.dart';
 
 import '../../../controller/home_screen_controller.dart';
-import '../../models/product_details.dart';
+import '../../../helper/route_helper.dart';
+import '../../models/product_details.dart' as productDetails;
 import '../../services/api_services.dart';
 import 'dart:ffi' as ffi;
+
+import 'dart:ui';
 
 class ProductDetailsScreen extends StatelessWidget {
   const ProductDetailsScreen({super.key});
@@ -22,49 +25,56 @@ class ProductDetailsScreen extends StatelessWidget {
     return GetBuilder<HomeScreenController>(builder: (homeScreenController) {
       return SafeArea(
         child: Scaffold(
-          appBar: CustomAppBar(
-            title: homeScreenController.productsDetails.name,
-            isBackButtonExist: true,
-            onBackPressed: () {
-              Get.back();
-              Future.delayed(const Duration(milliseconds: 50), () {
-                homeScreenController.setPopularProductsDetails(Product(
-                  id: 0,
-                  name: "",
-                  description: "",
-                  price: 0,
-                  shortDescription: '',
-                  discountPrice: 0,
-                  discountPercentage: 0,
-                  rating: 0,
-                  totalReviews: 0,
-                  totalSold: 0,
-                  quantity: 0,
-                  isFavorite: false,
-                  thumbnails: [],
-                  sizes: [],
-                  colors: [],
-                  brand: '',
-                  shop: ShopOfProduct(
-                      id: 0,
-                      name: "",
-                      logo: "",
-                      rating: 0,
-                      estimatedDeliveryTime: "",
-                      deliveryCharge: 0),
-                ));
-              });
-            },
-            menuWidget: Row(
-              children: [
-                CustomNotificationButton(
-                  tap: () {},
-                ),
-                sizedBoxW10(),
-                CustomCartButton(
-                  tap: () {},
-                )
-              ],
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(125),
+            child: CustomAppBar(
+              title: homeScreenController.productsDetails.name,
+              isBackButtonExist: true,
+
+              onBackPressed: () {
+                Get.back();
+                Future.delayed(const Duration(milliseconds: 50), () {
+                  homeScreenController.setPopularProductsDetails(
+                      productDetails.Product(
+                    id: 0,
+                    name: "",
+                    description: "",
+                    price: 0,
+                    shortDescription: '',
+                    discountPrice: 0,
+                    discountPercentage: 0,
+                    rating: 0,
+                    totalReviews: 0,
+                    totalSold: 0,
+                    quantity: 0,
+                    isFavorite: false,
+                    thumbnails: [],
+                    sizes: [],
+                    colors: [],
+                    brand: '',
+                    shop: productDetails.ShopOfProduct(
+                        id: 0,
+                        name: "",
+                        logo: "",
+                        rating: 0,
+                        estimatedDeliveryTime: "",
+                        deliveryCharge: 0),
+                  ));
+                });
+              },
+              menuWidget: Row(
+                children: [
+                  CustomNotificationButton(
+                    tap: () {},
+                  ),
+                  sizedBoxW10(),
+                  CustomCartButton(
+                    tap: () {
+                      Get.toNamed(RouteHelper.getCartRoute());
+                    },
+                  )
+                ],
+              ),
             ),
           ),
           body: SingleChildScrollView(
@@ -115,8 +125,8 @@ class ProductDetailsScreen extends StatelessWidget {
                           enableInfiniteScroll: true,
                           reverse: false,
                           autoPlay: true,
-                          autoPlayInterval: Duration(seconds: 3),
-                          autoPlayAnimationDuration: Duration(milliseconds: 800),
+                          autoPlayInterval: const Duration(seconds: 3),
+                          autoPlayAnimationDuration: const Duration(milliseconds: 800),
                           autoPlayCurve: Curves.fastOutSlowIn,
                           enlargeCenterPage: true,
                           enlargeFactor: 0.3,
@@ -198,7 +208,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                     .toString()
                                 : "",
                             style: TextStyle(
-                              color: Color(0xFF4C5829),
+                              color: const Color(0xFF4C5829),
                               fontSize: 18,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w700,

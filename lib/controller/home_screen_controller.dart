@@ -2,6 +2,7 @@ import 'package:anuplal/app/models/category_products.dart';
 import 'package:anuplal/app/models/product_details.dart';
 import 'package:get/get.dart';
 
+import '../app/models/cart_model.dart';
 import '../app/models/product_model.dart';
 import '../app/services/api_services.dart';
 
@@ -21,6 +22,9 @@ class HomeScreenController extends GetxController implements GetxService {
 
   List<CategoryProducts> get categories => _categories;
   List<PopularProduct> _particularCategoriesproducts = [];
+
+List<ShopModel> get shopModel => _shopModel;
+   List<ShopModel> _shopModel = [];
 
   List<PopularProduct> get particularCategoriesproducts =>
       _particularCategoriesproducts;
@@ -112,5 +116,10 @@ class HomeScreenController extends GetxController implements GetxService {
     // } else {
     //   return false;
     // }
+  }
+  Future<void> addToCartListing(
+      List<ShopModel> shopModel) async {
+    _shopModel = shopModel;
+     update();
   }
 }

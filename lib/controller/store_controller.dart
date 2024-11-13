@@ -23,5 +23,9 @@ class StoreController extends GetxController implements GetxService {
     final bool result = await apiService.fetchCategories(this);
     return result;
   }
+  Future<bool> fetchNearestCategories() async {
+    final bool result = await apiService.fetchNearestCategories(this);
+    return result;
+  }
 
 }
