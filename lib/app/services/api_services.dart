@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:anuplal/app/models/category_products.dart';
+import 'package:anuplal/controller/community_controller.dart';
 import 'package:anuplal/controller/home_screen_controller.dart';
 import 'package:anuplal/controller/orders_controller.dart';
 import 'package:anuplal/controller/profile_controller.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../helper/route_helper.dart';
 import '../models/cart_model.dart';
+import '../models/community_model.dart';
 import '../models/orders_model.dart';
 import '../models/product_details.dart';
 import '../models/product_model.dart';
@@ -35,9 +37,11 @@ class ApiService {
   final String deleteCartItem = "https://anup.lab5.invoidea.in/api/cart/delete";
   final String logout = "https://anup.lab5.invoidea.in/api/logout";
   final String updateProfile = "https://anup.lab5.invoidea.in/api/update-profile";
+  final String comunity = "https://anup.lab5.invoidea.in/api/comunity";
 
   Future<bool> fetchPopularProducts(
-      HomeScreenController homeScreenController) async {
+      HomeScreenController homeScreenController)
+  async {
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -60,6 +64,33 @@ class ApiService {
       } else {
         return false;
       }
+    } else {
+      throw Exception('Failed to load popular products');
+    }
+  }
+
+  Future<void> fetchCommunity(
+      CommunityController communityController)
+  async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = await prefs.get("token").toString();
+
+    dynamic headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer ${token}",
+    };
+
+    final response = await http.get(Uri.parse(comunity),headers: headers);
+    debugPrint("comunity ${response.body}");
+
+
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      CommunityResponse communityResponse = CommunityResponse.fromJson(data);
+      communityController.setCommunity(communityResponse.data.community);
+
     } else {
       throw Exception('Failed to load popular products');
     }
