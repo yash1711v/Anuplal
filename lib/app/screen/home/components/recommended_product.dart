@@ -122,6 +122,7 @@ class RecommendedProduct extends StatelessWidget {
                         transparent: true,
                         onPressed: () {
                           // Add to cart action
+                          homeScreenController.addToCart(homeScreenController,product.id.toString());
                         },
                       ),
                     ],

@@ -29,7 +29,11 @@ class LoginController extends GetxController {
       if (response.statusCode == 200) {
         loginResponse.value = jsonDecode(response.body);
         print('Login successful: ${loginResponse.value}');
+        Get.toNamed(
+            RouteHelper.getOtpVerificationRoute(
+                phone));
         CommonToast('Login successful: ${loginResponse.value['otp']}');
+
       } else {
         print('Failed to login: ${response.body}');
         CommonToast('Failed to login');
@@ -53,8 +57,14 @@ class LoginController extends GetxController {
 
       if (response.statusCode == 200) {
         loginResponse.value = jsonDecode(response.body);
-          prefs.setString('token', loginResponse.value['token']);
-           Get.toNamed(RouteHelper.getLocationPickRoute());
+        debugPrint('otp successful: ${loginResponse.value}');
+        prefs.setString('token', loginResponse.value['token']);
+        if(loginResponse.value['message'] == 'Login successful.' && loginResponse.value['user']['register_status'] == 0){
+          Get.toNamed(RouteHelper.locationPick);
+        } else {
+          Get.toNamed(RouteHelper.dashboard);
+        }
+
       } else {
         print('Failed to otp: ${response.body}');
         CommonToast('Failed to otp');

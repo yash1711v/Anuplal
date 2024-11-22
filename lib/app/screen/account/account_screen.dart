@@ -61,7 +61,17 @@ class AccountScreen extends StatelessWidget {
       
                 }, title: 'Contact Us'),
                 SizedBox(height: 26),
-                buildColumn(tap: () {}, title: 'Privacy Policy'),
+                buildColumn(tap: () {
+
+                }, title: 'Privacy Policy'),
+                SizedBox(height: 26),
+                buildColumn(tap: () {
+                  Get.toNamed(RouteHelper.aboutUs);
+                }, title: 'About us'),
+                SizedBox(height: 26),
+                buildColumn(tap: () {
+                  Get.toNamed(RouteHelper.termsAndCondition);
+                }, title: 'Terms and Condition'),
               ],
             ),
           ),

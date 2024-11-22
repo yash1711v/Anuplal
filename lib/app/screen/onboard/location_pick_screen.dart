@@ -208,7 +208,7 @@ class _LocationPickScreenState extends State<LocationPickScreen> {
                     country: '',
                     phoneCode: '',
                   );
-                  dynamic val = ApiService().updateProfileApi(profileScreenController,user);
+                  dynamic val = ApiService().updateProfileApi(profileScreenController,user,1);
                   if(val != null){
                     Get.toNamed(RouteHelper.dashboard);
                   } else {

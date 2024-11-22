@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void _route() {
     Timer(const Duration(seconds: 1), () async {
      SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (prefs.getString('token') != null) {
+      if (prefs.getString('token') != null && prefs.getString('token') != '') {
         Get.toNamed(RouteHelper.getDashboardRoute());
       } else {
         Get.offAllNamed(RouteHelper.getLoginRoute());

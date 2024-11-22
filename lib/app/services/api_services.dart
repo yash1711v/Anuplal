@@ -8,6 +8,7 @@ import 'package:anuplal/controller/profile_controller.dart';
 import 'package:anuplal/controller/store_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../helper/route_helper.dart';
 import '../models/cart_model.dart';
 import '../models/orders_model.dart';
 import '../models/product_details.dart';
@@ -32,6 +33,7 @@ class ApiService {
   final String decreaseCartItem = "https://anup.lab5.invoidea.in/api/cart/decrement";
   final String increaseCartItem = "https://anup.lab5.invoidea.in/api/cart/increment";
   final String deleteCartItem = "https://anup.lab5.invoidea.in/api/cart/delete";
+  final String logout = "https://anup.lab5.invoidea.in/api/logout";
   final String updateProfile = "https://anup.lab5.invoidea.in/api/update-profile";
 
   Future<bool> fetchPopularProducts(
@@ -387,7 +389,7 @@ class ApiService {
 
 
   Future<dynamic> updateProfileApi(
-      ProfileController homeScreenController, User user)
+      ProfileController homeScreenController, User user,[int? registerationStatus])
   async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
@@ -399,6 +401,7 @@ class ApiService {
     dynamic body = {
       "name": user.name,
       "email": user.email,
+      "register_status": registerationStatus??1,
     };
 
     final response = await http.post(Uri.parse(updateProfile),body: jsonEncode(body), headers: headers);
@@ -414,6 +417,29 @@ class ApiService {
       } else {
         return false;
       }
+      // return true;
+    } else {
+      throw Exception('Failed to load popular products');
+    }
+  }
+
+  Future<dynamic> logOutApi()
+  async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = await prefs.get("token").toString();
+
+    dynamic headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer ${token}",
+    };
+
+
+    final response = await http.post(Uri.parse(logout),headers: headers);
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      debugPrint("logout $data");
+      prefs.setString("token", "");
+      Get.toNamed(RouteHelper.login);
       // return true;
     } else {
       throw Exception('Failed to load popular products');

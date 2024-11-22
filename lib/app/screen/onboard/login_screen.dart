@@ -79,7 +79,12 @@ class LoginScreen extends StatelessWidget {
                       const SizedBox(height: 20),
                       Obx(
                         () => loginController.isLoading.value
-                            ? const CircularProgressIndicator()
+                            ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const CircularProgressIndicator(),
+                              ],
+                            )
                             : CustomButtonWidget(
                                 buttonText: "Continue",
                                 gradient: const LinearGradient(
@@ -99,31 +104,14 @@ class LoginScreen extends StatelessWidget {
                                             ? 'Response: ${loginController.loginResponse}'
                                             : '',
                                       ));
-                                  if (_formKey.currentState!.validate()) {
-                                    Get.toNamed(
-                                        RouteHelper.getOtpVerificationRoute(
-                                            _phoneController.text));
-                                  }
+                                  // if (_formKey.currentState!.validate()) {
+                                  //   Get.toNamed(
+                                  //       RouteHelper.getOtpVerificationRoute(
+                                  //           _phoneController.text));
+                                  // }
                                 },
                               ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text("Don't have an account?"),
-                          InkWell(
-                              onTap: () {
-                                Get.toNamed(RouteHelper.getSignUpRoute());
-                              },
-                              child: const Text(
-                                "Sign Up",
-                                style: TextStyle(color: Colors.green),
-                              )),
-
-                          //sizedBox30(),
-                        ],
-                      )
                     ],
                   ),
                 ),

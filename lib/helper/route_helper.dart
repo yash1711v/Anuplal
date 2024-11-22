@@ -1,5 +1,6 @@
 
 import 'package:anuplal/app/screen/MyOrdersScreen/my_orders.dart';
+import 'package:anuplal/app/screen/TermsAndCondition/terms_condition.dart';
 import 'package:anuplal/app/screen/account/crop_doctor.dart';
 import 'package:anuplal/app/screen/dashboard/dashboard_screen.dart';
 import 'package:anuplal/app/screen/onboard/location_pick_screen.dart';
@@ -9,6 +10,7 @@ import 'package:anuplal/app/screen/store/category_all_product_screen.dart';
 import 'package:anuplal/app/screen/store/product_details_screen.dart';
 import 'package:get/get.dart';
 
+import '../app/screen/AboutUs/about_us.dart';
 import '../app/screen/account/Contact_Us.dart';
 import '../app/screen/account/cart_screen.dart';
 
@@ -34,6 +36,8 @@ class RouteHelper {
   static const String myOrders= '/myOrders';
   static const String ContactUs= '/ContactUs';
   static const String Notification= '/notification';
+  static const String aboutUs= '/AboutUs';
+  static const String termsAndCondition= '/termsAndCondition';
   static const String  Signup= '/Signup';
 
 
@@ -74,6 +78,8 @@ class RouteHelper {
     GetPage(name: cart, page: () => CartScreen()),
     GetPage(name: ContactUs, page: () => ContactUsScreen()),
     GetPage(name: Notification, page: () => NotificationScreen()),
+    GetPage(name: aboutUs, page: () => AboutUs()),
+    GetPage(name: termsAndCondition, page: () => TermsCondition()),
     GetPage(name: Signup, page: () =>  SignUpScreen ()),
 
 

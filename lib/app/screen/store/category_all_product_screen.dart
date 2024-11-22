@@ -70,7 +70,9 @@ class CategoryAllProductScreen extends StatelessWidget {
                         .quantity.toString(),
                     price: homeScreenController.particularCategoriesproducts[i]
                         .price.toString(),
-                    addCartTap: () {});
+                    addCartTap: () {
+                      homeScreenController.addToCart(homeScreenController,homeScreenController.particularCategoriesproducts[i].id.toString());
+                    });
               },),
           ),
         

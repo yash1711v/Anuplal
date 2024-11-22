@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../helper/route_helper.dart';
 import '../../models/profile_model.dart';
 import '../../services/api_services.dart';
 import '../MapsScreen/maps_screen.dart';
@@ -101,9 +102,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       return SafeArea(
         child: Scaffold(
-          appBar: const PreferredSize(
+          appBar:  PreferredSize(
             preferredSize: Size.fromHeight(125),
-            child: CustomAppBar(title: 'Account', isBackButtonExist: true,),
+            child: CustomAppBar(title: 'Account', isBackButtonExist: true,     menuWidget: Row(
+              children: [
+                CustomButtonWidget(
+                  width: 75,
+                  height: 25,
+                  isBold: false,
+                  buttonText: 'Save',
+                  onPressed: () {
+                    User user = User(
+                      id: profileScreenController.profile.id,
+                      phone: _phoneController.text,
+                      email: _emailController.text,
+                      name: _usernameController.text,
+                      phoneVerified: true,
+                      emailVerified: true,
+                      isActive: true,
+                      profilePhoto: '',
+                      dateOfBirth: '',
+                      country: '',
+                      phoneCode: '',
+                    );
+                    dynamic val = ApiService().updateProfileApi(profileScreenController,user);
+                  },
+                ),
+                SizedBox(width: 10,),
+              ],
+            ),),
           ),
           body: SingleChildScrollView(
               child: GetBuilder<ProfileController>(builder: (profileControl) {
@@ -147,11 +174,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         .withOpacity(0.1),
                                   ),
                                   child:
-                                  const CustomNetworkImageWidget(
+                                  CustomNetworkImageWidget(
                                     imagePadding: Dimensions.paddingSize40,
                                     height: 150,
                                     width: 150,
-                                    image: '',
+                                    image: profileScreenController.profile.profilePhoto,
                                     placeholder: Images.icGallery,
                                     fit: BoxFit.cover,)
                               ),
@@ -183,25 +210,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               })
           ),
           bottomNavigationBar: Padding(
-            padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+            padding:  EdgeInsets.all(Dimensions.paddingSizeDefault),
             child: SingleChildScrollView(
-              child: CustomButtonWidget(buttonText: 'Save',
-                onPressed: () {
-                  User user = User(
-                    id: profileScreenController.profile.id,
-                    phone: _phoneController.text,
-                    email: _emailController.text,
-                    name: _usernameController.text,
-                    phoneVerified: true,
-                    emailVerified: true,
-                    isActive: true,
-                    profilePhoto: '',
-                    dateOfBirth: '',
-                    country: '',
-                    phoneCode: '',
-                  );
-                  dynamic val = ApiService().updateProfileApi(profileScreenController,user);
-                  // Get.back();
+              child: CustomButtonWidget(buttonText: 'Logout',
+                color: Colors.red,
+                borderSideColor: Colors.red,
+                onPressed: () async {
+                  await ApiService().logOutApi();
                 },),
             ),
           ),

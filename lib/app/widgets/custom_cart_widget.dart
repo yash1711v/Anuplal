@@ -111,7 +111,7 @@ class _CartItemContainerState extends State<CartItemContainer> {
                   child: Icon(Icons.delete, color: Colors.red)),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Rs.${widget.price}',
+                child: Text('Rs.${quantity>0?widget.price*quantity:widget.price }',
                     style: const TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold)),
               ),

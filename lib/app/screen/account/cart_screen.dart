@@ -6,6 +6,8 @@ import '../../widgets/custom_appbar.dart';
 import '../../widgets/custom_cart_widget.dart';
 import 'package:get/get.dart';
 
+import '../../widgets/place_order_button.dart';
+
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
 
@@ -78,6 +80,12 @@ class _CartScreenState extends State<CartScreen> {
                   ],
                 );
               },
+            ),
+          ),
+          bottomNavigationBar: SingleChildScrollView(
+            child: const Padding(
+              padding: EdgeInsets.only(bottom: 15.0),
+              child: PlaceOrderButton(totalAmountValue: '',),
             ),
           ),
         );
