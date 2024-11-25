@@ -23,15 +23,17 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    homeScreenController.addToCartListing([]);
-    apiService.FetchcartListing(homeScreenController);
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      homeScreenController.addToCartListing([]);
+      apiService.FetchcartListing(homeScreenController);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: GetBuilder<HomeScreenController>(builder: (homeScreenController) {
-        if(homeScreenController.shopModel.isEmpty){
+        if (homeScreenController.shopModel.isEmpty) {
           return const Scaffold(
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(125),
@@ -74,7 +76,8 @@ class _CartScreenState extends State<CartScreen> {
                       price: homeScreenController
                           .shopModel[0].products![index].price,
                       id: homeScreenController.shopModel[0].products![index].id
-                          .toString(), homeScreenController: homeScreenController,
+                          .toString(),
+                      homeScreenController: homeScreenController,
                     ),
                     const SizedBox(height: 10),
                   ],
@@ -83,9 +86,11 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ),
           bottomNavigationBar: SingleChildScrollView(
-            child: const Padding(
+            child:  Padding(
               padding: EdgeInsets.only(bottom: 15.0),
-              child: PlaceOrderButton(totalAmountValue: '',),
+              child: PlaceOrderButton(
+                totalAmountValue: homeScreenController.totalPrice.toString(),
+              ),
             ),
           ),
         );

@@ -17,8 +17,10 @@ import '../models/product_details.dart';
 import '../models/product_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:mime/mime.dart';
 
 import '../models/profile_model.dart';
+import 'package:http_parser/http_parser.dart';
 
 class ApiService {
   final String imageBaseUrl = "https://anup.lab5.invoidea.in";
@@ -28,20 +30,27 @@ class ApiService {
   final String productDetails =
       'https://anup.lab5.invoidea.in/api/product-details?product_id=';
   final String addToCart = "https://anup.lab5.invoidea.in/api/cart/store";
-  final String  categoriesListing = "https://anup.lab5.invoidea.in/api/categories";
-  final String  profileDetails = "https://anup.lab5.invoidea.in/api/profile";
-  final String  myOrders = "https://anup.lab5.invoidea.in/api/orders";
-  final String  cartListing = "https://anup.lab5.invoidea.in/api/carts";
-  final String decreaseCartItem = "https://anup.lab5.invoidea.in/api/cart/decrement";
-  final String increaseCartItem = "https://anup.lab5.invoidea.in/api/cart/increment";
+  final String categoriesListing =
+      "https://anup.lab5.invoidea.in/api/categories";
+  final String profileDetails = "https://anup.lab5.invoidea.in/api/profile";
+  final String myOrders = "https://anup.lab5.invoidea.in/api/orders";
+  final String cartListing = "https://anup.lab5.invoidea.in/api/carts";
+  final String decreaseCartItem =
+      "https://anup.lab5.invoidea.in/api/cart/decrement";
+  final String increaseCartItem =
+      "https://anup.lab5.invoidea.in/api/cart/increment";
   final String deleteCartItem = "https://anup.lab5.invoidea.in/api/cart/delete";
   final String logout = "https://anup.lab5.invoidea.in/api/logout";
-  final String updateProfile = "https://anup.lab5.invoidea.in/api/update-profile";
+  final String updateProfile =
+      "https://anup.lab5.invoidea.in/api/update-profile";
+  final String commentApi = "https://anup.lab5.invoidea.in/api/comment-store";
+  final String getCommentsApi = "https://anup.lab5.invoidea.in/api/comments-details";
   final String comunity = "https://anup.lab5.invoidea.in/api/comunity";
+  final String comunityPost =
+      "https://anup.lab5.invoidea.in/api/comunity-store";
 
   Future<bool> fetchPopularProducts(
-      HomeScreenController homeScreenController)
-  async {
+      HomeScreenController homeScreenController) async {
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -69,10 +78,7 @@ class ApiService {
     }
   }
 
-  Future<void> fetchCommunity(
-      CommunityController communityController)
-  async {
-
+  Future<void> fetchCommunity(CommunityController communityController) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
 
@@ -81,16 +87,13 @@ class ApiService {
       "Authorization": "Bearer ${token}",
     };
 
-    final response = await http.get(Uri.parse(comunity),headers: headers);
+    final response = await http.get(Uri.parse(comunity), headers: headers);
     debugPrint("comunity ${response.body}");
-
-
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       CommunityResponse communityResponse = CommunityResponse.fromJson(data);
       communityController.setCommunity(communityResponse.data.community);
-
     } else {
       throw Exception('Failed to load popular products');
     }
@@ -143,31 +146,7 @@ class ApiService {
     }
   }
 
-
-  Future<bool> fetchCategories(
-      StoreController store) async {
-    final response = await http.get(Uri.parse(categoriesListing));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final List<dynamic> categoryJson = data['data']['categories'];
-
-      List<CategoryProducts> categoryProducts = categoryJson
-          .map((categoryJson) => CategoryProducts.fromJson(categoryJson))
-          .toList();
-      store.setCategories(categoryProducts);
-
-      if (store.categories.isNotEmpty) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      throw Exception('Failed to load popular products');
-    }
-  }
-  Future<bool> fetchNearestCategories(
-      StoreController store) async {
+  Future<bool> fetchCategories(StoreController store) async {
     final response = await http.get(Uri.parse(categoriesListing));
 
     if (response.statusCode == 200) {
@@ -189,6 +168,27 @@ class ApiService {
     }
   }
 
+  Future<bool> fetchNearestCategories(StoreController store) async {
+    final response = await http.get(Uri.parse(categoriesListing));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List<dynamic> categoryJson = data['data']['categories'];
+
+      List<CategoryProducts> categoryProducts = categoryJson
+          .map((categoryJson) => CategoryProducts.fromJson(categoryJson))
+          .toList();
+      store.setCategories(categoryProducts);
+
+      if (store.categories.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      throw Exception('Failed to load popular products');
+    }
+  }
 
   Future<bool> fetchProfileDetails(
       ProfileController profileScreenController) async {
@@ -200,12 +200,12 @@ class ApiService {
       "Authorization": "Bearer ${token}",
     };
 
-    final response = await http.get(Uri.parse(profileDetails),headers: headers);
+    final response =
+        await http.get(Uri.parse(profileDetails), headers: headers);
 
     if (response.statusCode == 200) {
-
       final data = json.decode(response.body);
-     debugPrint("profileDetails $data");
+      debugPrint("profileDetails $data");
       User profile = User.fromJson(data['data']['user']);
 
       profileScreenController.setProfile(profile);
@@ -216,15 +216,13 @@ class ApiService {
         return false;
       }
 
-
       return true;
     } else {
       throw Exception('Failed to load popular products');
     }
   }
 
-  Future<bool> fetchMyOrders(
-      OrdersController orderScreenController) async {
+  Future<bool> fetchMyOrders(OrdersController orderScreenController) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
 
@@ -234,8 +232,7 @@ class ApiService {
     };
 
     debugPrint("profileDetails $token");
-    final response = await http.get(Uri.parse(myOrders),headers: headers);
-
+    final response = await http.get(Uri.parse(myOrders), headers: headers);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -244,9 +241,8 @@ class ApiService {
       final List<dynamic> orderJson = data['data']['orders'];
 
       debugPrint("orderJson $orderJson");
-      List<Order> order = orderJson
-          .map((orderJson) => Order.fromJson(orderJson))
-          .toList();
+      List<Order> order =
+          orderJson.map((orderJson) => Order.fromJson(orderJson)).toList();
 
       orderScreenController.setOrder(order);
 
@@ -256,7 +252,6 @@ class ApiService {
         return false;
       }
 
-
       return true;
     } else {
       throw Exception('Failed to load popular products');
@@ -264,8 +259,7 @@ class ApiService {
   }
 
   Future<dynamic> addToCartApi(
-      HomeScreenController homeScreenController, String id)
-  async {
+      HomeScreenController homeScreenController, String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
     dynamic headers = {
@@ -277,11 +271,11 @@ class ApiService {
       "product_id": id,
     };
 
-    final response = await http.post(Uri.parse(addToCart),body: jsonEncode(body), headers: headers);
+    final response = await http.post(Uri.parse(addToCart),
+        body: jsonEncode(body), headers: headers);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-
 
       await FetchcartListing(homeScreenController).then((value) {
         return true;
@@ -292,7 +286,7 @@ class ApiService {
     }
   }
 
-  Future<bool> FetchcartListing (
+  Future<bool> FetchcartListing(
       HomeScreenController homeScreenController) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
@@ -302,11 +296,10 @@ class ApiService {
       "Authorization": "Bearer ${token}",
     };
 
-    final response = await http.get(Uri.parse(cartListing),headers: headers);
+    final response = await http.get(Uri.parse(cartListing), headers: headers);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-
 
       final List<dynamic> cartListingJson = data['data']['cart_items'];
 
@@ -326,8 +319,8 @@ class ApiService {
     }
   }
 
-  Future<dynamic> decreaseCartItemApi(HomeScreenController homeScreenController,String id)
-  async {
+  Future<dynamic> decreaseCartItemApi(
+      HomeScreenController homeScreenController, String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
     dynamic headers = {
@@ -339,25 +332,27 @@ class ApiService {
       "product_id": id,
     };
 
-    final response = await http.post(Uri.parse(decreaseCartItem),body: jsonEncode(body), headers: headers);
+    final response = await http.post(Uri.parse(decreaseCartItem),
+        body: jsonEncode(body), headers: headers);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-     debugPrint("decreaseCartItemApi $data");
+      debugPrint("decreaseCartItemApi $data");
       final List<dynamic> cartListingJson = data['data']['cart_items'];
 
       List<ShopModel> shopModel = cartListingJson
           .map((shopModelJson) => ShopModel.fromJson(shopModelJson))
           .toList();
 
-      homeScreenController.addToCartListing(shopModel);
       // return true;
     } else {
       throw Exception('Failed to load popular products');
     }
   }
 
-  Future<dynamic> increaseCartItemApi( HomeScreenController homeScreenController, String id,)
-  async {
+  Future<dynamic> increaseCartItemApi(
+    HomeScreenController homeScreenController,
+    String id,
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
     dynamic headers = {
@@ -369,7 +364,8 @@ class ApiService {
       "product_id": id,
     };
 
-    final response = await http.post(Uri.parse(increaseCartItem),body: jsonEncode(body), headers: headers);
+    final response = await http.post(Uri.parse(increaseCartItem),
+        body: jsonEncode(body), headers: headers);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -380,16 +376,16 @@ class ApiService {
           .map((shopModelJson) => ShopModel.fromJson(shopModelJson))
           .toList();
 
-      homeScreenController.addToCartListing(shopModel);
       // return true;
     } else {
       throw Exception('Failed to load popular products');
     }
   }
 
-
-  Future<dynamic> deleteCartItemApi(HomeScreenController homeScreenController, String id,)
-  async {
+  Future<dynamic> deleteCartItemApi(
+    HomeScreenController homeScreenController,
+    String id,
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
     dynamic headers = {
@@ -401,7 +397,8 @@ class ApiService {
       "product_id": id,
     };
 
-    final response = await http.post(Uri.parse(deleteCartItem),body: jsonEncode(body), headers: headers);
+    final response = await http.post(Uri.parse(deleteCartItem),
+        body: jsonEncode(body), headers: headers);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       debugPrint("deleteCartItem $data");
@@ -418,10 +415,9 @@ class ApiService {
     }
   }
 
-
   Future<dynamic> updateProfileApi(
-      ProfileController homeScreenController, User user,[int? registerationStatus])
-  async {
+      ProfileController homeScreenController, User user,
+      [int? registerationStatus]) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
     dynamic headers = {
@@ -432,10 +428,11 @@ class ApiService {
     dynamic body = {
       "name": user.name,
       "email": user.email,
-      "register_status": registerationStatus??1,
+      "register_status": registerationStatus ?? 1,
     };
 
-    final response = await http.post(Uri.parse(updateProfile),body: jsonEncode(body), headers: headers);
+    final response = await http.post(Uri.parse(updateProfile),
+        body: jsonEncode(body), headers: headers);
     debugPrint("updateProfileApi ${response.body}");
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -443,7 +440,7 @@ class ApiService {
       User profile = User.fromJson(data['data']['user']);
 
       homeScreenController.setProfile(user);
-      if(data['message'] == "Profile updated successfully"){
+      if (data['message'] == "Profile updated successfully") {
         return true;
       } else {
         return false;
@@ -454,8 +451,7 @@ class ApiService {
     }
   }
 
-  Future<dynamic> logOutApi()
-  async {
+  Future<dynamic> logOutApi() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
 
@@ -464,8 +460,7 @@ class ApiService {
       "Authorization": "Bearer ${token}",
     };
 
-
-    final response = await http.post(Uri.parse(logout),headers: headers);
+    final response = await http.post(Uri.parse(logout), headers: headers);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       debugPrint("logout $data");
@@ -477,5 +472,107 @@ class ApiService {
     }
   }
 
+  Future<dynamic>? communityPostApi(
+      {required String title,
+      required String description,
+      required String user_id,
+      required dynamic image}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.get("token").toString();
 
+    final url = Uri.parse(comunityPost);
+
+    var request = http.MultipartRequest('Post', url);
+    request.headers['Authorization'] = "Bearer $token";
+    request.headers['Content-Type'] = "application/json";
+
+    request.fields['title'] = title;
+    request.fields['description'] = description;
+    request.fields['user_id'] = user_id;
+
+    if (image != null && image.isNotEmpty) {
+      var mimeType =
+          lookupMimeType(image); // Detect MIME type (e.g., image/jpeg)
+      var file = await http.MultipartFile.fromPath(
+        'community_image', // Field name expected by the backend
+        image, // File path
+        contentType: MediaType.parse(mimeType!), // Set MIME type explicitly
+      );
+      request.files.add(file);
+    }
+
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString();
+
+    if (response.statusCode == 200) {
+      debugPrint("Response body: $responseBody");
+      return jsonDecode(responseBody);
+    } else {
+      debugPrint("Upload failed with status: ${response.statusCode}");
+      debugPrint("Response body: $responseBody");
+    }
+
+    return null;
+  }
+
+  Future<dynamic> CommentOnApi(
+      {required String user_id, required String comment, required String post_id}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = await prefs.get("token").toString();
+    dynamic headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer ${token}",
+    };
+
+    dynamic body = {
+      "user_id": int.parse(user_id),
+      "posts_id": int.parse(post_id),
+      "comments": comment,
+    };
+
+    debugPrint("CommentOnApi $body");
+
+    final response = await http.post(Uri.parse(commentApi),
+        body: jsonEncode(body), headers: headers);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      debugPrint("CommentOnApi $data");
+      if(data['message'].toString().trim() == "Success !!"){
+        return true;}else{
+        return false;
+      }
+
+    } else {
+      throw Exception('Failed to load popular products');
+    }
+  }
+
+  Future<dynamic>? getComments(String postId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = await prefs.get("token").toString();
+    dynamic headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer ${token}",
+    };
+
+    var body = {
+      "post_id": postId,
+    };
+
+    final response = await http.post(Uri.parse(getCommentsApi), headers: headers,body: jsonEncode(body));
+
+    debugPrint("postId $postId");
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      debugPrint("getCommentOnApi $data");
+      if(data['message'].toString().trim() == "Comments Details"){
+        return data['data']['comments'];}else{
+        return [];
+      }
+
+    } else {
+      throw Exception('Failed to load comments products');
+    }
+  }
 }

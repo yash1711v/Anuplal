@@ -120,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       phoneVerified: true,
                       emailVerified: true,
                       isActive: true,
-                      profilePhoto: '',
+                      profilePhoto: profileScreenController.profile.profilePhoto,
                       dateOfBirth: '',
                       country: '',
                       phoneCode: '',

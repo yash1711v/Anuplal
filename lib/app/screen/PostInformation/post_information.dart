@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:anuplal/controller/profile_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -5,6 +8,7 @@ import '../../../utils/dimensions.dart';
 import '../../../utils/images.dart';
 import '../../../utils/sizeboxes.dart';
 import '../../models/profile_model.dart';
+import '../../services/api_services.dart';
 import '../../widgets/custom_appbar.dart';
 import '../../widgets/custom_button_widget.dart';
 import '../../widgets/custom_network_image.dart';
@@ -13,6 +17,7 @@ import '../../widgets/underline_textfield.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:get/get.dart';
 
 class PostInformation extends StatefulWidget {
   const PostInformation({super.key});
@@ -22,7 +27,7 @@ class PostInformation extends StatefulWidget {
 }
 
 class _PostInformationState extends State<PostInformation> {
-
+  ProfileController profileControl = Get.put(ProfileController());
 
   final _postTitle = TextEditingController();
 
@@ -35,6 +40,7 @@ class _PostInformationState extends State<PostInformation> {
     // TODO: implement initState
     super.initState();
     _setInitialLocation();
+    Get.find<ProfileController>().getProfileInfo(profileControl);
   }
 
   Future<void> _setInitialLocation() async {
@@ -73,7 +79,7 @@ class _PostInformationState extends State<PostInformation> {
       Placemark place = placemarks[0];
       setState(() {
         _deliveryController.text =
-        "${place.street}, ${place.locality}, ${place.country}";
+            "${place.street}, ${place.locality}, ${place.country}";
       });
     } catch (e) {
       print(e);
@@ -86,30 +92,56 @@ class _PostInformationState extends State<PostInformation> {
       child: Scaffold(
         appBar: const PreferredSize(
           preferredSize: Size.fromHeight(125),
-          child: CustomAppBar(title: 'Add Post', isBackButtonExist: true,),
+          child: CustomAppBar(
+            title: 'Add Post',
+            isBackButtonExist: true,
+          ),
         ),
         body: Column(
           children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8.0, left: 16, right: 16),
-            child: DottedBorder(
-              dashPattern: [10, 3],
-              borderType: BorderType.RRect,
-              color: Colors.grey,
-              radius: Radius.circular(12),
-              padding: EdgeInsets.all(10),
-              child: Container(
-                    width: double.infinity,
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(image: AssetImage(Images.icGallery2),),
-                        shape: BoxShape.rectangle,
-                    ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0, left: 16, right: 16),
+                child: DottedBorder(
+                  dashPattern: [10, 3],
+                  borderType: BorderType.RRect,
+                  color: Colors.grey,
+                  radius: const Radius.circular(12),
+                  padding: const EdgeInsets.all(10),
+                  child: GetBuilder<ProfileController>(
+                    builder: (controller) {
+                      return GestureDetector(
+                        onTap: () {
+                          Get.find<ProfileController>()
+                              .pickImage(isRemove: false);
+                        },
+                        child: Get.find<ProfileController>().pickedImage != null
+                            ? Image.file(
+                                File(
+                                  Get.find<ProfileController>()
+                                      .pickedImage!
+                                      .path,
+                                ),
+                                height: 90,
+                                width: 90,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                width: double.infinity,
+                                clipBehavior: Clip.hardEdge,
+                                decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(Images.icGallery2),
+                                  ),
+                                  shape: BoxShape.rectangle,
+                                ),
+                              ),
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
             // Center(
             //   child: Container(
             //     height: 150,
@@ -163,13 +195,17 @@ class _PostInformationState extends State<PostInformation> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextFieldWidget(
                 maxLength: 10,
-                hintText: 'Post Title', controller: _postTitle,),
+                hintText: 'Post Title',
+                controller: _postTitle,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextFieldWidget(
                 maxLength: 60,
-                hintText: 'Post Description', controller: _postDescription,),
+                hintText: 'Post Description',
+                controller: _postDescription,
+              ),
             ),
 
             Padding(
@@ -181,23 +217,32 @@ class _PostInformationState extends State<PostInformation> {
                 isReadOnly: true,
                 hintText: 'Delivery location',
                 controller: _deliveryController,
-                suffix: Icon(Icons.location_on_sharp, color: Theme
-                    .of(context)
-                    .primaryColor,),),
+                suffix: Icon(
+                  Icons.location_on_sharp,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
             ),
-            SizedBox(height: 200,),
-
+            const SizedBox(
+              height: 200,
+            ),
           ],
         ),
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
           child: SingleChildScrollView(
-            child: CustomButtonWidget(buttonText: 'Post',
+            child: CustomButtonWidget(
+              buttonText: 'Post',
               onPressed: () {
-
-
+                ApiService().communityPostApi(
+                    title: _postTitle.text,
+                    description: _postDescription.text,
+                    user_id:
+                        Get.find<ProfileController>().profile.id.toString(),
+                    image: Get.find<ProfileController>().pickedImage!.path);
                 // Get.back();
-              },),
+              },
+            ),
           ),
         ),
       ),

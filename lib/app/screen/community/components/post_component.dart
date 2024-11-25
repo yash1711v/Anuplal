@@ -5,6 +5,8 @@ import 'package:anuplal/utils/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../widgets/comment_screen.dart';
 class PostComponent extends StatelessWidget {
  final  String name;
  final  String title;
@@ -12,11 +14,12 @@ class PostComponent extends StatelessWidget {
  final  int media_id;
  final String created_at;
  final String image;
-  const PostComponent({super.key, required this.name, required this.title, required this.description, required this.media_id, required this.created_at, required this.image});
+ final String postId;
+  final String userId;
+  const PostComponent({super.key, required this.name, required this.title, required this.description, required this.media_id, required this.created_at, required this.image, required this.postId, required this.userId});
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('image: $image');
     return Padding(
       padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
       child: Column(
@@ -45,7 +48,9 @@ class PostComponent extends StatelessWidget {
                 color: Theme.of(context).hintColor),),
           Divider(),
           TextButton(
-            onPressed: () {  },
+            onPressed: () {
+              showCommentSheet(context, userId: userId, postId: postId);
+            },
             child: Row(mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Image.asset(Images.icComment,height: 24,width: 24,),
@@ -55,8 +60,6 @@ class PostComponent extends StatelessWidget {
               ],
             ),
           )
-
-
 
         ],
       ),

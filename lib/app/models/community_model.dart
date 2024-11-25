@@ -147,13 +147,13 @@ class Media {
   factory Media.fromJson(Map<String, dynamic> json) {
     return Media(
       id: json['id'],
-      type: json['type'],
-      name: json['name'],
-      originalName: json['original_name'],
-      src: json['src'],
-      extention: json['extention'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      type: json['type']??"",
+      name: json['name']??"",
+      originalName: json['original_name']??"",
+      src: json['src']??"",
+      extention: json['extention']??"",
+      createdAt: json['created_at']??"",
+      updatedAt: json['updated_at']??"",
     );
   }
 }
@@ -182,7 +182,7 @@ class CommunityUser {
   final int id;
   final String name;
   final String? lastName;
-  final String phone;
+  final String? phone;
   final String email;
   final int mediaId;
   final String gender;
@@ -225,18 +225,18 @@ class CommunityUser {
       name: json['name'],
       lastName: json['last_name'],
       phone: json['phone'],
-      email: json['email'],
-      mediaId: json['media_id'],
-      gender: json['gender'],
-      dateOfBirth: json['date_of_birth'],
-      isActive: json['is_active'],
-      emailVerifiedAt: DateTime.parse(json['email_verified_at']),
-      phoneVerifiedAt: DateTime.parse(json['phone_verified_at']),
+      email: json['email']??"",
+      mediaId: json['media_id']??0,
+      gender: json['gender']??"",
+      dateOfBirth: json['date_of_birth']??"",
+      isActive: json['is_active']??0,
+      emailVerifiedAt: DateTime.parse(json['email_verified_at']??"2024-11-25T05:07:45.000000Z"),
+      phoneVerifiedAt: DateTime.parse(json['phone_verified_at']??"2024-11-25T05:07:45.000000Z"),
       drivingLicence: json['driving_lience'],
       vehicleType: json['vehicle_type'],
-      registerStatus: json['register_status'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      registerStatus: json['register_status']??0,
+      createdAt: DateTime.parse(json['created_at']??"2024-11-25T05:07:45.000000Z"),
+      updatedAt: DateTime.parse(json['updated_at']??"2024-11-25T05:07:45.000000Z"),
       deletedAt: json['deleted_at'] != null
           ? DateTime.parse(json['deleted_at'])
           : null,

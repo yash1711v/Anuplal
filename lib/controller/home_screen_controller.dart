@@ -1,5 +1,6 @@
 import 'package:anuplal/app/models/category_products.dart';
 import 'package:anuplal/app/models/product_details.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../app/models/cart_model.dart';
@@ -122,4 +123,23 @@ List<ShopModel> get shopModel => _shopModel;
     _shopModel = shopModel;
      update();
   }
+
+  List<dynamic> _finalProducts = [];
+
+  List<dynamic> get finalProducts => _finalProducts;
+
+  void setFinalProducts(List<dynamic> val) {
+    _finalProducts = val;
+
+    for (var i = 0; i < _finalProducts.length; i++) {
+      _totalPrice += double.parse(finalProducts[i]['price'].toString());
+    }
+
+    debugPrint(finalProducts.toString());
+    update();
+  }
+
+  double _totalPrice = 0;
+  double get totalPrice => _totalPrice;
+
 }

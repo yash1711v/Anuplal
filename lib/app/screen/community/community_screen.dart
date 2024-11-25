@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/community_controller.dart';
+import '../../../controller/profile_controller.dart';
+import '../PostInformation/post_information.dart';
+
 class CommunityScreen extends StatefulWidget {
   const CommunityScreen({super.key});
 
@@ -15,13 +18,13 @@ class CommunityScreen extends StatefulWidget {
 }
 
 class _CommunityScreenState extends State<CommunityScreen> {
-
   CommunityController communityController = Get.put(CommunityController());
-
+ ProfileController profileController = Get.put(ProfileController());
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    Get.find<ProfileController>().getProfileInfo(profileController);
     communityController.fetchCommunity();
   }
 
@@ -31,16 +34,23 @@ class _CommunityScreenState extends State<CommunityScreen> {
       builder: (controller) {
         return SafeArea(
           child: Scaffold(
+            extendBody: true,
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(140),
-              child: CustomAppBar(title: 'Community',menuWidget: Row(
-                children: [
-                  CustomNotificationButton(tap: () {  },),
-                  sizedBoxW10(),
-                  CustomCartButton(tap: () {  },),
-                ],
-              ),
-                isPostButtonExist: true,
+              child: CustomAppBar(
+                title: 'Community',
+                menuWidget: Row(
+                  children: [
+                    CustomNotificationButton(
+                      tap: () {},
+                    ),
+                    sizedBoxW10(),
+                    CustomCartButton(
+                      tap: () {},
+                    ),
+                  ],
+                ),
+                isPostButtonExist: false,
               ),
             ),
             body: SingleChildScrollView(
@@ -48,15 +58,40 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   itemCount: controller.community.data.length,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemBuilder: (_,i) {
-                    return  PostComponent(name: controller.community.data[i].user!.name, title: controller.community.data[i].title, description: controller.community.data[i].description, media_id: controller.community.data[i].mediaId, created_at: controller.community.data[i].createdAt, image: (controller.community.data[i].media?? Media(id: 0, type: "", name: "", src: "", createdAt: "", updatedAt: ""))!.src,);
+                  itemBuilder: (_, i) {
+                    return PostComponent(
+                      name: controller.community.data[i].user!.name,
+                      title: controller.community.data[i].title,
+                      description: controller.community.data[i].description,
+                      media_id: controller.community.data[i].mediaId,
+                      created_at: controller.community.data[i].createdAt,
+                      image: (controller.community.data[i].media ??
+                              Media(
+                                  id: 0,
+                                  type: "",
+                                  name: "",
+                                  src: "",
+                                  createdAt: "",
+                                  updatedAt: ""))!
+                          .src,
+                      postId: controller.community.data[i].id.toString(),
+                      userId:
+                          Get.find<ProfileController>().profile.id.toString(),
+                    );
                   }),
+            ),
+            floatingActionButton: Container(
+              width: 100,
+              height: 40,
+              child: ElevatedButton(
+                  onPressed: () {
+                    Get.to(() => const PostInformation());
+                  },
+                  child: const Text("Add Post")),
             ),
           ),
         );
-
       },
-
     );
   }
 }
