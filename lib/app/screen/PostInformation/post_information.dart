@@ -116,16 +116,21 @@ class _PostInformationState extends State<PostInformation> {
                               .pickImage(isRemove: false);
                         },
                         child: Get.find<ProfileController>().pickedImage != null
-                            ? Image.file(
-                                File(
-                                  Get.find<ProfileController>()
-                                      .pickedImage!
-                                      .path,
+                            ? Container(
+                                width: double.infinity,
+                                clipBehavior: Clip.hardEdge,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.rectangle,
                                 ),
-                                height: 90,
-                                width: 90,
-                                fit: BoxFit.cover,
-                              )
+                              child: Image.file(
+                                  File(
+                                    Get.find<ProfileController>()
+                                        .pickedImage!
+                                        .path,
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                            )
                             : Container(
                                 width: double.infinity,
                                 clipBehavior: Clip.hardEdge,
@@ -207,22 +212,6 @@ class _PostInformationState extends State<PostInformation> {
                 controller: _postDescription,
               ),
             ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextFieldWidget(
-                onPress: () {
-                  // Get.to(() => MapScreen());
-                },
-                isReadOnly: true,
-                hintText: 'Delivery location',
-                controller: _deliveryController,
-                suffix: Icon(
-                  Icons.location_on_sharp,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-            ),
             const SizedBox(
               height: 200,
             ),
@@ -240,7 +229,7 @@ class _PostInformationState extends State<PostInformation> {
                     user_id:
                         Get.find<ProfileController>().profile.id.toString(),
                     image: Get.find<ProfileController>().pickedImage!.path);
-                // Get.back();
+                Get.back();
               },
             ),
           ),

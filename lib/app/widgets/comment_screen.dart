@@ -93,12 +93,11 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
               // Header (drag handle)
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: 5,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(5),
+                child:   Text(
+                  "Comments",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -109,7 +108,14 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                         shrinkWrap: true,
                         // Required for Scrollable in SingleChildScrollView
                         itemCount: _comments.length,
+                        padding: EdgeInsets.zero,
                         itemBuilder: (context, index) => ListTile(
+                          contentPadding: EdgeInsets.only(
+                            left: 8,
+                            right: 6,
+                            top: 8,
+                            bottom: 8,
+                          ),
                           title: Row(
                             children: [
                               Column(
@@ -118,28 +124,29 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        (_comments[index]["user"] ??
-                                            User(
-                                                    id: 0,
-                                                    name: "",
-                                                    phone: "",
-                                                    phoneVerified: false,
-                                                    emailVerified: false,
-                                                    isActive: false,
-                                                    profilePhoto: "",
-                                                    dateOfBirth: "")
-                                                .toJson())["name"],
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      CircleAvatar(
+                                        radius: 12,
+                                        backgroundImage: AssetImage("assets/images/Avatar.png"),
                                       ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
+                                      SizedBox(width: 8),
+
+                                     SizedBox(width: 280,child: Text(
+                                       (_comments[index]["user"] ??
+                                           User(
+                                               id: 0,
+                                               name: "",
+                                               phone: "",
+                                               phoneVerified: false,
+                                               emailVerified: false,
+                                               isActive: false,
+                                               profilePhoto: "",
+                                               dateOfBirth: "")
+                                               .toJson())["name"],
+                                       style: TextStyle(
+                                         color: Theme.of(context).primaryColor,
+                                         fontWeight: FontWeight.bold,
+                                       ),
+                                     ),),
                                       Text(
                                         formatDateTime((_comments[index]["created_at"]) ?? ""),
                                         style: TextStyle(
@@ -150,12 +157,43 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(_comments[index]["comments"]),
-                                    ],
+                                  // Row(
+                                  //   mainAxisAlignment: MainAxisAlignment.start,
+                                  //   children: [
+                                  //     Text(
+                                  //       formatDateTime((_comments[index]["created_at"]) ?? ""),
+                                  //       style: TextStyle(
+                                  //         fontSize: 10,
+                                  //         color: Colors.grey,
+                                  //         fontWeight: FontWeight.normal,
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                            width: 365,
+                                            child: Text(_comments[index]["comments"],
+                                              maxLines: 3,
+                                              style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.normal,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),)),
+                                      ],
+                                    ),
                                   ),
+                                 SizedBox(height: 8),
+                                 Container(
+                                    height: 2,
+                                    width: 400,
+                                    color: Colors.grey.withOpacity(0.2),
+                                 ),
+                                  SizedBox(height: 8),
                                 ],
                               ),
                             ],

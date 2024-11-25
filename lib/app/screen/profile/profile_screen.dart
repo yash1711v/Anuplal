@@ -139,54 +139,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       sizedBox20(),
-                      Center(
-                        child: Container(
-                          height: 150,
-                          width: 150,
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(shape: BoxShape.circle,
-                            border: Border.all(width: 0.5,
-                              color: Theme
-                                  .of(context)
-                                  .primaryColor
-                                  .withOpacity(0.40),),
-                            color: Theme
-                                .of(context)
-                                .primaryColor
-                                .withOpacity(0.1),
-                          ),
-                          // alignment: Alignment.center,
-                          child: profileControl.pickedImage != null ? Image.file(
-                            File(profileControl.pickedImage!.path,), height: 90,
-                            width: 90,
-                            fit: BoxFit.cover,
-                          ) : Stack(
-                            children: [
-                              Container(
-                                  height: 150,
-                                  width: 150,
-                                  clipBehavior: Clip.hardEdge,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Theme
-                                        .of(context)
-                                        .primaryColor
-                                        .withOpacity(0.1),
-                                  ),
-                                  child:
-                                  CustomNetworkImageWidget(
-                                    imagePadding: Dimensions.paddingSize40,
-                                    height: 150,
-                                    width: 150,
-                                    image: profileScreenController.profile.profilePhoto,
-                                    placeholder: Images.icGallery,
-                                    fit: BoxFit.cover,)
-                              ),
-                              // Image.asset(Images.profilePlaceholder,)
-                            ],
-                          ),
-                        ),
+                      CircleAvatar(
+                        radius: 100,
+                        backgroundImage: AssetImage("assets/images/Avatar.png"),
                       ),
+                      // Center(
+                      //   child: Container(
+                      //     height: 150,
+                      //     width: 150,
+                      //     clipBehavior: Clip.hardEdge,
+                      //     decoration: BoxDecoration(shape: BoxShape.circle,
+                      //       border: Border.all(width: 0.5,
+                      //         color: Theme
+                      //             .of(context)
+                      //             .primaryColor
+                      //             .withOpacity(0.40),),
+                      //       color: Theme
+                      //           .of(context)
+                      //           .primaryColor
+                      //           .withOpacity(0.1),
+                      //     ),
+                      //     // alignment: Alignment.center,
+                      //     child: profileControl.pickedImage != null ? Image.file(
+                      //       File(profileControl.pickedImage!.path,), height: 90,
+                      //       width: 90,
+                      //       fit: BoxFit.cover,
+                      //     ) : Stack(
+                      //       children: [
+                      //         Container(
+                      //             height: 150,
+                      //             width: 150,
+                      //             clipBehavior: Clip.hardEdge,
+                      //             decoration: BoxDecoration(
+                      //               shape: BoxShape.circle,
+                      //               color: Theme
+                      //                   .of(context)
+                      //                   .primaryColor
+                      //                   .withOpacity(0.1),
+                      //             ),
+                      //             child:
+                      //             CustomNetworkImageWidget(
+                      //               imagePadding: Dimensions.paddingSize40,
+                      //               height: 150,
+                      //               width: 150,
+                      //               image: profileScreenController.profile.profilePhoto,
+                      //               placeholder: Images.icGallery,
+                      //               fit: BoxFit.cover,)
+                      //         ),
+                      //         // Image.asset(Images.profilePlaceholder,)
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       sizedBoxDefault(),
                       TextFieldWidget(
                         hintText: 'Username', controller: _usernameController,),

@@ -1,3 +1,5 @@
+import 'package:anuplal/app/models/community_model.dart';
+
 class ShopModel {
   final int shopId;
   final String shopName;
@@ -59,8 +61,9 @@ class ProductModel {
   final String? unit;
   final String? gift;
   final int shopId;
+  final Media? media;
 
-  ProductModel({
+  ProductModel( {
     required this.id,
     required this.quantity,
     required this.name,
@@ -77,6 +80,7 @@ class ProductModel {
     this.unit,
     this.gift,
     required this.shopId,
+    this.media,
   });
 
   // Factory method to create ProductModel from JSON
@@ -85,19 +89,20 @@ class ProductModel {
       id: json['id'],
       quantity: json['quantity'],
       name: json['name'],
-      thumbnail: json['thumbnail'],
-      brand: json['brand'],
+      thumbnail: json['thumbnail']??"",
+      brand: json['brand']??"",
       price: json['price'].toDouble(),
       discountPrice: json['discount_price'].toDouble(),
-      discountPercentage: json['discount_percentage'].toDouble(),
-      rating: json['rating'].toDouble(),
-      totalReviews: json['total_reviews'],
-      totalSold: json['total_sold'],
+      discountPercentage: (json['discount_percentage']??0.0).toDouble(),
+      rating: (json['rating']??0.0).toDouble(),
+      totalReviews: json['total_reviews']??"",
+      totalSold: json['total_sold']??"",
       color: json['color'],
       size: json['size'],
       unit: json['unit'],
       gift: json['gift'],
       shopId: json['shop_id'],
+      media: json['media'] != null ? Media.fromJson(json['media']) : null,
     );
   }
 
@@ -120,6 +125,7 @@ class ProductModel {
       'unit': unit,
       'gift': gift,
       'shop_id': shopId,
+      'media': media?.toJson(),
     };
   }
 }

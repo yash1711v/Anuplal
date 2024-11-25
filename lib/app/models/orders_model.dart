@@ -1,3 +1,7 @@
+import 'package:anuplal/app/models/community_model.dart';
+
+import 'cart_model.dart';
+
 class Order {
   int id;
   String orderCode;
@@ -8,8 +12,9 @@ class Order {
   String orderStatus;
   String createdAt;
   String placedAt;
-  Address? address; // Make address nullable
+  Address? address; // Nullable
   String? gift;
+  final List<ProductModel>? products; // Make media nullable
 
   Order({
     required this.id,
@@ -23,6 +28,7 @@ class Order {
     required this.placedAt,
     this.address, // Nullable
     this.gift,
+    this.products, // Nullable
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -36,8 +42,11 @@ class Order {
       orderStatus: json['order_status'],
       createdAt: json['created_at'],
       placedAt: json['placed_at'],
-      address: json['address'] != null ? Address.fromJson(json['address']) : null, // Null check
+      address: json['address'] != null ? Address.fromJson(json['address']) : null,
       gift: json['gift'],
+      products: (json['products'] as List)
+          .map((productJson) => ProductModel.fromJson(productJson))
+          .toList(), // Handle null
     );
   }
 
@@ -54,6 +63,7 @@ class Order {
       'placed_at': placedAt,
       'address': address?.toJson(), // Use null-aware operator
       'gift': gift,
+      'products': products!.map((product) => product.toJson()).toList(),// Handle null
     };
   }
 }

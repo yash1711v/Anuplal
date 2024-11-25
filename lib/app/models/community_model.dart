@@ -156,6 +156,19 @@ class Media {
       updatedAt: json['updated_at']??"",
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'type': type,
+      'name': name,
+      'original_name': originalName,
+      'src': src,
+      'extention': extention,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+    };
+  }
 }
 
 class PageLink {

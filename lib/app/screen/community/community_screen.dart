@@ -80,14 +80,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     );
                   }),
             ),
-            floatingActionButton: Container(
-              width: 100,
-              height: 40,
-              child: ElevatedButton(
-                  onPressed: () {
-                    Get.to(() => const PostInformation());
-                  },
-                  child: const Text("Add Post")),
+            floatingActionButton: FloatingActionButton(
+              child: const Icon(Icons.add,color: Colors.white,),
+              onPressed: () {
+                Get.to(() => PostInformation());
+              },
             ),
           ),
         );

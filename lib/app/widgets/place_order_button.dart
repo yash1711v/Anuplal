@@ -1,10 +1,14 @@
+import 'package:anuplal/app/services/api_services.dart';
 import 'package:anuplal/app/widgets/custom_button_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../models/cart_model.dart';
+
 class PlaceOrderButton extends StatelessWidget {
   final String totalAmountValue;
-   const PlaceOrderButton({super.key, required this.totalAmountValue});
+  final List<ShopModel> shopModel;
+   const PlaceOrderButton({super.key, required this.totalAmountValue, required this.shopModel});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +69,9 @@ class PlaceOrderButton extends StatelessWidget {
               end: Alignment(-1, 0.02),
               colors: [Color(0xFF4C5829),Color(0xFF739A2B), ],
             ),
-            buttonText: "Order", onPressed: () {}),
+            buttonText: "Order", onPressed: () {
+              ApiService().bookOrder(shopModel: shopModel);
+        }),
       ],
     );
   }

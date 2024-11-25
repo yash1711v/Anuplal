@@ -44,6 +44,7 @@ class ApiService {
   final String updateProfile =
       "https://anup.lab5.invoidea.in/api/update-profile";
   final String commentApi = "https://anup.lab5.invoidea.in/api/comment-store";
+  final String bookApi = "https://anup.lab5.invoidea.in/api/place-order";
   final String getCommentsApi = "https://anup.lab5.invoidea.in/api/comments-details";
   final String comunity = "https://anup.lab5.invoidea.in/api/comunity";
   final String comunityPost =
@@ -232,11 +233,14 @@ class ApiService {
     };
 
     debugPrint("profileDetails $token");
+
     final response = await http.get(Uri.parse(myOrders), headers: headers);
+    debugPrint("orderJson $response");
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
+      debugPrint("orderJson $data");
       // Order order = Order.fromJson(data['data']['user']);
       final List<dynamic> orderJson = data['data']['orders'];
 
@@ -302,7 +306,7 @@ class ApiService {
       final data = json.decode(response.body);
 
       final List<dynamic> cartListingJson = data['data']['cart_items'];
-
+debugPrint("cartListingJson $cartListingJson");
       List<ShopModel> shopModel = cartListingJson
           .map((shopModelJson) => ShopModel.fromJson(shopModelJson))
           .toList();
@@ -336,7 +340,8 @@ class ApiService {
         body: jsonEncode(body), headers: headers);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      debugPrint("decreaseCartItemApi $data");
+
+
       final List<dynamic> cartListingJson = data['data']['cart_items'];
 
       List<ShopModel> shopModel = cartListingJson
@@ -516,7 +521,8 @@ class ApiService {
   }
 
   Future<dynamic> CommentOnApi(
-      {required String user_id, required String comment, required String post_id}) async {
+      {required String user_id, required String comment, required String post_id})
+  async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
     dynamic headers = {
@@ -575,4 +581,36 @@ class ApiService {
       throw Exception('Failed to load comments products');
     }
   }
+
+
+  Future<dynamic> bookOrder(
+      {required List<ShopModel> shopModel})
+  async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = await prefs.get("token").toString();
+    dynamic headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer ${token}",
+    };
+
+    dynamic body = {
+      "products": shopModel[0].products!.map((product) => product.toJson()).toList(),
+      "payment_method": "cash"
+    };
+
+    debugPrint("postOnApi ${jsonEncode(body)}");
+
+    final response = await http.post(Uri.parse(bookApi),
+        body: jsonEncode(body), headers: headers);
+
+    debugPrint("reponse ${response.body}");
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      debugPrint("CommentOnApi $data");
+    } else {
+      throw Exception('Failed to load popular products');
+    }
+  }
+
 }
