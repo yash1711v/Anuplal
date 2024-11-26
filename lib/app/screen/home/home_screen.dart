@@ -33,9 +33,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    homeScreenController.fetchProducts(homeScreenController);
-    apiService.FetchcartListing(homeScreenController);
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      homeScreenController.fetchProducts(homeScreenController);
+      apiService.FetchcartListing(homeScreenController);
+    });
   }
 
   @override
@@ -85,13 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Images.logo,
                                       width: 140,
                                     ),
-                                    Text(
-                                      "NAMASKAR",
-                                      style: poppinsMedium.copyWith(
-                                          color: Theme.of(context)
-                                              .secondaryHeaderColor,
-                                          fontSize: Dimensions.fontSizeDefault),
-                                    ),
                                     Row(
                                       children: [
                                         Icon(
@@ -135,11 +130,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                           GetBuilder<HomeScreenController>(
                                               builder: (homeScreenController) {
                                             return Visibility(
-                                              visible: homeScreenController
-                                                  .shopModel.isNotEmpty,
+                                              visible: homeScreenController.shopModel[0].products!.isNotEmpty,
                                               child: Positioned(
                                                 right: 0,
-                                                left: 15,
+                                                left: 12,
                                                 bottom: 5,
                                                 child: Container(
                                                   padding: EdgeInsets.all(6),
@@ -153,8 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   ),
                                                   child: Center(
                                                     child: Text(
-                                                      homeScreenController
-                                                          .shopModel.length
+                                                      homeScreenController.shopModel[0].products!.length
                                                           .toString(),
                                                       style: TextStyle(
                                                         fontSize: 12,

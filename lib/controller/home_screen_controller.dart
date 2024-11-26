@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../app/models/cart_model.dart';
+
+import '../app/models/categories_model.dart' as categoriesModel;
 import '../app/models/product_model.dart';
 import '../app/services/api_services.dart';
 
@@ -95,6 +97,7 @@ List<ShopModel> get shopModel => _shopModel;
 
   Future<bool> fetchParticularDetails(
       HomeScreenController controller, String id) async {
+    debugPrint("id $id");
     dynamic fetchedProducts =
         await apiService.fetchProductsDetails(controller, id);
     if (fetchedProducts) {
@@ -124,22 +127,27 @@ List<ShopModel> get shopModel => _shopModel;
      update();
   }
 
-  List<dynamic> _finalProducts = [];
-
-  List<dynamic> get finalProducts => _finalProducts;
-
-  void setFinalProducts(List<dynamic> val) {
-    _finalProducts = val;
-
-    for (var i = 0; i < _finalProducts.length; i++) {
-      _totalPrice += double.parse(finalProducts[i]['price'].toString());
-    }
-
-    debugPrint(finalProducts.toString());
-    update();
-  }
+  // List<dynamic> _finalProducts = [];
+  //
+  // List<dynamic> get finalProducts => _finalProducts;
+  //
+  // void setFinalProducts(List<dynamic> val) {
+  //   _finalProducts = val;
+  //
+  //   for (var i = 0; i < _finalProducts.length; i++) {
+  //     _totalPrice += double.parse(finalProducts[i]['price'].toString());
+  //   }
+  //
+  //   debugPrint(finalProducts.toString());
+  //   update();
+  // }
 
   double _totalPrice = 0;
   double get totalPrice => _totalPrice;
+
+  void setTotalPrice(double val) {
+    _totalPrice = val;
+    update();
+  }
 
 }

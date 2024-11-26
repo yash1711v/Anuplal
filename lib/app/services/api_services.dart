@@ -1,7 +1,9 @@
 // api_service.dart
 import 'dart:async';
 import 'dart:convert';
+import 'package:anuplal/app/models/categories_model.dart' as nearestShop;
 import 'package:anuplal/app/models/category_products.dart';
+import 'package:anuplal/app/screen/NearestStore/nearest_store.dart';
 import 'package:anuplal/controller/community_controller.dart';
 import 'package:anuplal/controller/home_screen_controller.dart';
 import 'package:anuplal/controller/orders_controller.dart';
@@ -21,34 +23,33 @@ import 'package:mime/mime.dart';
 
 import '../models/profile_model.dart';
 import 'package:http_parser/http_parser.dart';
+// import 'package:razorpay_flutter/razorpay_flutter.dart';
+
+String baseUrl = "https://anup.lab5.invoidea.in/api/";
 
 class ApiService {
   final String imageBaseUrl = "https://anup.lab5.invoidea.in";
-  final String url = 'https://anup.lab5.invoidea.in/api/home';
+  final String imageBaseUrlMain = "https://anup.lab5.invoidea.in/storage/";
+  final String url = '${baseUrl}home';
   final String CategoriesProducturl =
-      'https://anup.lab5.invoidea.in/api/category-products?category_id=';
-  final String productDetails =
-      'https://anup.lab5.invoidea.in/api/product-details?product_id=';
-  final String addToCart = "https://anup.lab5.invoidea.in/api/cart/store";
-  final String categoriesListing =
-      "https://anup.lab5.invoidea.in/api/categories";
-  final String profileDetails = "https://anup.lab5.invoidea.in/api/profile";
-  final String myOrders = "https://anup.lab5.invoidea.in/api/orders";
-  final String cartListing = "https://anup.lab5.invoidea.in/api/carts";
-  final String decreaseCartItem =
-      "https://anup.lab5.invoidea.in/api/cart/decrement";
-  final String increaseCartItem =
-      "https://anup.lab5.invoidea.in/api/cart/increment";
-  final String deleteCartItem = "https://anup.lab5.invoidea.in/api/cart/delete";
-  final String logout = "https://anup.lab5.invoidea.in/api/logout";
-  final String updateProfile =
-      "https://anup.lab5.invoidea.in/api/update-profile";
-  final String commentApi = "https://anup.lab5.invoidea.in/api/comment-store";
-  final String bookApi = "https://anup.lab5.invoidea.in/api/place-order";
-  final String getCommentsApi = "https://anup.lab5.invoidea.in/api/comments-details";
-  final String comunity = "https://anup.lab5.invoidea.in/api/comunity";
-  final String comunityPost =
-      "https://anup.lab5.invoidea.in/api/comunity-store";
+      '${baseUrl}category-products?category_id=';
+  final String productDetails = '${baseUrl}product-details?product_id=';
+  final String addToCart = "${baseUrl}cart/store";
+  final String categoriesListing = "${baseUrl}categories";
+  final String profileDetails = "${baseUrl}profile";
+  final String myOrders = "${baseUrl}orders";
+  final String cartListing = "${baseUrl}carts";
+  final String decreaseCartItem = "${baseUrl}cart/decrement";
+  final String increaseCartItem = "${baseUrl}cart/increment";
+  final String deleteCartItem = "${baseUrl}cart/delete";
+  final String logout = "${baseUrl}logout";
+  final String updateProfile = "${baseUrl}update-profile";
+  final String commentApi = "${baseUrl}comment-store";
+  final String bookApi = "${baseUrl}place-order";
+  final String getCommentsApi = "${baseUrl}comments-details";
+  final String comunity = "${baseUrl}comunity";
+  final String comunityPost = "${baseUrl}comunity-store";
+  final String nearestStore = "${baseUrl}nearest-store";
 
   Future<bool> fetchPopularProducts(
       HomeScreenController homeScreenController) async {
@@ -153,29 +154,7 @@ class ApiService {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final List<dynamic> categoryJson = data['data']['categories'];
-
-      List<CategoryProducts> categoryProducts = categoryJson
-          .map((categoryJson) => CategoryProducts.fromJson(categoryJson))
-          .toList();
-      store.setCategories(categoryProducts);
-
-      if (store.categories.isNotEmpty) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      throw Exception('Failed to load popular products');
-    }
-  }
-
-  Future<bool> fetchNearestCategories(StoreController store) async {
-    final response = await http.get(Uri.parse(categoriesListing));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final List<dynamic> categoryJson = data['data']['categories'];
-
+      debugPrint("categoryJson $categoryJson");
       List<CategoryProducts> categoryProducts = categoryJson
           .map((categoryJson) => CategoryProducts.fromJson(categoryJson))
           .toList();
@@ -300,16 +279,32 @@ class ApiService {
       "Authorization": "Bearer ${token}",
     };
 
+    debugPrint("token $token");
     final response = await http.get(Uri.parse(cartListing), headers: headers);
-
+    debugPrint("cartListing ${response.body}");
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
       final List<dynamic> cartListingJson = data['data']['cart_items'];
-debugPrint("cartListingJson $cartListingJson");
-      List<ShopModel> shopModel = cartListingJson
-          .map((shopModelJson) => ShopModel.fromJson(shopModelJson))
-          .toList();
+      homeScreenController
+          .setTotalPrice(double.parse(data['data']['total_price'].toString()));
+      List<ShopModel> shopModel = [];
+      if (cartListingJson.isEmpty) {
+        homeScreenController.setTotalPrice(0.0);
+        shopModel = [
+          ShopModel(
+              shopId: 0,
+              shopName: "",
+              shopLogo: "",
+              shopRating: 0,
+              hasGift: false,
+              products: [])
+        ];
+      } else {
+        shopModel = cartListingJson
+            .map((shopModelJson) => ShopModel.fromJson(shopModelJson))
+            .toList();
+      }
 
       homeScreenController.addToCartListing(shopModel);
 
@@ -341,8 +336,8 @@ debugPrint("cartListingJson $cartListingJson");
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
-
       final List<dynamic> cartListingJson = data['data']['cart_items'];
+      homeScreenController.setTotalPrice(data['data']['total_price']);
 
       List<ShopModel> shopModel = cartListingJson
           .map((shopModelJson) => ShopModel.fromJson(shopModelJson))
@@ -376,6 +371,7 @@ debugPrint("cartListingJson $cartListingJson");
       final data = json.decode(response.body);
       debugPrint("increaseData $data");
       final List<dynamic> cartListingJson = data['data']['cart_items'];
+      homeScreenController.setTotalPrice(data['data']['total_price'] ?? 0.0);
 
       List<ShopModel> shopModel = cartListingJson
           .map((shopModelJson) => ShopModel.fromJson(shopModelJson))
@@ -521,8 +517,9 @@ debugPrint("cartListingJson $cartListingJson");
   }
 
   Future<dynamic> CommentOnApi(
-      {required String user_id, required String comment, required String post_id})
-  async {
+      {required String user_id,
+      required String comment,
+      required String post_id}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
     dynamic headers = {
@@ -536,19 +533,21 @@ debugPrint("cartListingJson $cartListingJson");
       "comments": comment,
     };
 
-    debugPrint("CommentOnApi $body");
+    debugPrint("CommentOnApi bOdy $body");
 
     final response = await http.post(Uri.parse(commentApi),
         body: jsonEncode(body), headers: headers);
 
+    debugPrint("CommentOnApi Response ${response.body}");
+
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       debugPrint("CommentOnApi $data");
-      if(data['message'].toString().trim() == "Success !!"){
-        return true;}else{
+      if (data['message'].toString().trim() == "Success !!") {
+        return true;
+      } else {
         return false;
       }
-
     } else {
       throw Exception('Failed to load popular products');
     }
@@ -566,26 +565,24 @@ debugPrint("cartListingJson $cartListingJson");
       "post_id": postId,
     };
 
-    final response = await http.post(Uri.parse(getCommentsApi), headers: headers,body: jsonEncode(body));
+    final response = await http.post(Uri.parse(getCommentsApi),
+        headers: headers, body: jsonEncode(body));
 
     debugPrint("postId $postId");
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       debugPrint("getCommentOnApi $data");
-      if(data['message'].toString().trim() == "Comments Details"){
-        return data['data']['comments'];}else{
+      if (data['message'].toString().trim() == "Comments Details") {
+        return data['data']['comments'];
+      } else {
         return [];
       }
-
     } else {
       throw Exception('Failed to load comments products');
     }
   }
 
-
-  Future<dynamic> bookOrder(
-      {required List<ShopModel> shopModel})
-  async {
+  Future<dynamic> bookOrder({required List<ShopModel> shopModel}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
     dynamic headers = {
@@ -594,7 +591,8 @@ debugPrint("cartListingJson $cartListingJson");
     };
 
     dynamic body = {
-      "products": shopModel[0].products!.map((product) => product.toJson()).toList(),
+      "products":
+          shopModel[0].products!.map((product) => product.toJson()).toList(),
       "payment_method": "cash"
     };
 
@@ -608,9 +606,119 @@ debugPrint("cartListingJson $cartListingJson");
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       debugPrint("CommentOnApi $data");
+      if (data['message'].toString().trim() == "Order created successfully") {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       throw Exception('Failed to load popular products');
     }
   }
+
+  Future<bool> fetchNearestStore(
+      {required String latitude,
+      required String longitude,
+      required StoreController homeScreenController}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = await prefs.get("token").toString();
+    dynamic headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer ${token}",
+    };
+
+    dynamic body = {
+      "latitude": latitude,
+      "longitude": longitude,
+    };
+
+    final response = await http.post(Uri.parse(nearestStore),
+        headers: headers, body: jsonEncode(body));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      final List<dynamic> categoryJson = data['data']['nearestShops'];
+
+      List<nearestShop.NearestShop> nearestShopList = categoryJson
+          .map((categoryJson) => nearestShop.NearestShop.fromJson(categoryJson))
+          .toList();
+
+      homeScreenController.setNearestShop(nearestShopList);
+
+      debugPrint("Nearest Prtoduct $nearestShopList");
+      if (homeScreenController.nearestShop.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      throw Exception('Failed to load Categories products');
+    }
+  }
+
+  // Razorpay _razorpay = Razorpay();
+
+  // void razorpayImplement(AppointmentModel appointment, String orderId,
+  //     String amount, String currency, String key) async {
+  //   try {
+  //     _razorpay.open({
+  //       'key': key,
+  //       'amount': int.parse(amount) * 100, // in the smallest currency sub-unit
+  //       'name': appointment.firstName, // Generate order_id using Orders API
+  //       "order": {
+  //         "id": orderId,
+  //         "entity": 100,
+  //         "amount_paid": 0,
+  //         "amount_due": 0,
+  //         "currency": currency,
+  //         "receipt": "Receipt #20",
+  //         "status": "created",
+  //         "attempts": 0,
+  //       },
+  //       'description': 'Demo',
+  //       'timeout': 300, // in seconds
+  //       'prefill': {'contact': appointment.mobileNo, 'email': "yv48183@gmail.com"}
+  //     });
+  //     // Correct event handlers for success, failure, and external wallet
+  //     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+  //     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+  //     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  //   } catch (e) {
+  //     debugPrint('Error====>: ${e.toString()}');
+  //     // _razorpay.clear();
+  //   }
+  // }
+  //
+  // void _handlePaymentSuccess(
+  //     PaymentSuccessResponse response,
+  //     ) {
+  //   // Do something when payment succeeds
+  //   Map<String, dynamic> requestBody = {
+  //     "paymentId": "${response.paymentId}",
+  //     "orderId": "${Get.find<AppointmentController>().orderId}",
+  //     "paymentStatus": "success"
+  //   };
+  //   debugPrint("requestBody==> $requestBody");
+  //   debugPrint('EVENT_PAYMENT_SUCCESS: ${response.data}');
+  //
+  //   Get.find<AppointmentController>().postDataBack(requestBody);
+  // }
+  //
+  // void _handlePaymentError(PaymentFailureResponse response) {
+  //   // Do something when payment fails
+  //   debugPrint('EVENT_PAYMENT_ERROR: ${response.code} - ${response.message}');
+  // }
+  //
+  // void _handleExternalWallet(ExternalWalletResponse response) {
+  //   // Do something when an external wallet was selected
+  //   debugPrint('EVENT_EXTERNAL_WALLET: ${response.walletName}');
+  // }
+  //
+
+
+
+
+
 
 }

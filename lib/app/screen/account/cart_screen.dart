@@ -89,7 +89,7 @@ class _CartScreenState extends State<CartScreen> {
             child:  Padding(
               padding: EdgeInsets.only(bottom: 15.0),
               child: PlaceOrderButton(
-                totalAmountValue: homeScreenController.totalPrice.toString(), shopModel: homeScreenController.shopModel,
+                totalAmountValue: homeScreenController.totalPrice.toString(), shopModel: homeScreenController.shopModel, homeScreenController: homeScreenController,
               ),
             ),
           ),

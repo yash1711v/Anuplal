@@ -30,10 +30,10 @@ class CustomCartButton extends StatelessWidget {
             Image.asset(Images.icCart,height: 30,width: 30,),
         GetBuilder<HomeScreenController>(builder: (homeScreenController) {
           return Visibility(
-            visible: homeScreenController.shopModel.isNotEmpty,
+            visible: homeScreenController.shopModel[0].products!.isNotEmpty,
             child: Positioned(
               right: 0,
-              left: 15,
+              left: 12,
               bottom: 5,
               child: Container(
                 padding: EdgeInsets.all(6),
@@ -47,7 +47,7 @@ class CustomCartButton extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    homeScreenController.shopModel.length.toString(),
+                    homeScreenController.shopModel[0].products!.length.toString(),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,

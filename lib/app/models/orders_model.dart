@@ -44,7 +44,7 @@ class Order {
       placedAt: json['placed_at'],
       address: json['address'] != null ? Address.fromJson(json['address']) : null,
       gift: json['gift'],
-      products: (json['products'] as List)
+      products: ((json['products']??[]) as List)
           .map((productJson) => ProductModel.fromJson(productJson))
           .toList(), // Handle null
     );

@@ -1,6 +1,8 @@
 
+import 'package:anuplal/controller/home_screen_controller.dart';
 import 'package:get/get.dart';
 
+import '../app/models/categories_model.dart';
 import '../app/models/category_products.dart';
 import '../app/services/api_services.dart';
 
@@ -19,12 +21,21 @@ class StoreController extends GetxController implements GetxService {
     update();
   }
 
+  List<NearestShop>  _nearestShop = [];
+  List<NearestShop> get nearestShop => _nearestShop;
+
+  void setNearestShop(List<NearestShop> val) {
+    _nearestShop = val;
+    update();
+  }
+
   Future<bool> fetchCategories() async {
     final bool result = await apiService.fetchCategories(this);
     return result;
   }
-  Future<bool> fetchNearestCategories() async {
-    final bool result = await apiService.fetchNearestCategories(this);
+
+  Future<bool> fetchNearestCategories({required String lat, required String long}) async {
+    final bool result = await apiService.fetchNearestStore(latitude: lat, longitude: long, homeScreenController: this);
     return result;
   }
 

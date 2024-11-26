@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import '../services/api_services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'dart:ui';
+
+import 'expandedText.dart';
+
 
 class CommentBottomSheet extends StatefulWidget {
   String userId;
@@ -170,22 +174,21 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                                   //     ),
                                   //   ],
                                   // ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                            width: 365,
-                                            child: Text(_comments[index]["comments"],
-                                              maxLines: 3,
-                                              style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.normal,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),)),
-                                      ],
-                                    ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                          width: 380,
+                                          child: ExpandableTextWidget(text: _comments[index]["comments"])),
+
+                                          // Text(_comments[index]["comments"],
+                                          //   maxLines: 3,
+                                          //   style: TextStyle(
+                                          //   color: Colors.black,
+                                          //   fontWeight: FontWeight.normal,
+                                          //   overflow: TextOverflow.ellipsis,
+                                          // ),)),
+                                    ],
                                   ),
                                  SizedBox(height: 8),
                                  Container(
@@ -288,3 +291,4 @@ void showCommentSheet(BuildContext context,
     ),
   );
 }
+

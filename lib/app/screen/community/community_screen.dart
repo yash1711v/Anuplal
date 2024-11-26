@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 import '../../../controller/community_controller.dart';
 import '../../../controller/profile_controller.dart';
+import '../../services/api_services.dart';
 import '../PostInformation/post_information.dart';
 
 class CommunityScreen extends StatefulWidget {
@@ -20,12 +21,14 @@ class CommunityScreen extends StatefulWidget {
 class _CommunityScreenState extends State<CommunityScreen> {
   CommunityController communityController = Get.put(CommunityController());
  ProfileController profileController = Get.put(ProfileController());
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     Get.find<ProfileController>().getProfileInfo(profileController);
     communityController.fetchCommunity();
+
   }
 
   @override
