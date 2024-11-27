@@ -58,7 +58,7 @@ class ApiService {
   Future<bool> fetchPopularProducts(
       HomeScreenController homeScreenController) async {
     final response = await http.get(Uri.parse(url));
-
+    debugPrint("popularProducts ${response.body}");
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final List<dynamic> productsJson = data['data']['popular_products'];
@@ -590,7 +590,7 @@ class ApiService {
     }
   }
 
-  Future<dynamic> bookOrder({required List<ShopModel> shopModel,required bool paymentMethod}) async {
+  Future<dynamic> bookOrder({required List<ShopModel> shopModel,required bool paymentMethod, required String totalAmountValue}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
     dynamic headers = {
@@ -601,7 +601,7 @@ class ApiService {
     dynamic body = {
       "products":
           shopModel[0].products!.map((product) => product.toJson()).toList(),
-      "payment_method": "cash"
+      "payment_method": paymentMethod?"razorpay":"cash"
     };
 
     debugPrint("postOnApi ${jsonEncode(body)}");
@@ -616,6 +616,8 @@ class ApiService {
       debugPrint("CommentOnApi $data");
       if (data['message'].toString().trim() == "Order created successfully") {
         if(paymentMethod){
+          debugPrint("CommentOnApi $data");
+          razorpayImplement(data['data']["order"]['order_code'],  totalAmountValue, 'INR', "rzp_test_ttuVlnJolWhSyR");
           return data['data'];
         }
         return true;
@@ -675,8 +677,8 @@ class ApiService {
       String amount, String currency, String key) async {
     try {
       _razorpay.open({
-        'key': key,
-        'amount': int.parse(amount) * 100, // in the smallest currency sub-unit
+        'key': "rzp_test_ttuVlnJolWhSyR",
+        'amount': double.parse(amount) * 100, // in the smallest currency sub-unit
         'name': "", // Generate order_id using Orders API
         "order": {
           "id": orderId,

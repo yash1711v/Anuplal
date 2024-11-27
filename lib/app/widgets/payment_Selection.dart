@@ -24,10 +24,14 @@ class _PaymentOptionsScreenState extends State<PaymentOptionsScreen> {
       body: Column(
         children: [
           CheckboxListTile(
-            title: Text('COD (Cash on Delivery)'),
+            title: const Text('COD (Cash on Delivery)'),
             value: isCodSelected,
             activeColor: checkedColor, // Color for the checked state
-            checkColor: checkMarkColor, // Color of the check mark
+            checkColor: checkMarkColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            side: const BorderSide(color: Colors.green),// Color of the check mark
             onChanged: (bool? value) {
               if (value == true) {
                 setState(() {
@@ -40,10 +44,15 @@ class _PaymentOptionsScreenState extends State<PaymentOptionsScreen> {
             controlAffinity: ListTileControlAffinity.trailing,
           ),
           CheckboxListTile(
-            title: Text('Pay Online'),
+            title: const Text('Pay Online'),
             value: isPayOnlineSelected,
             activeColor: checkedColor, // Color for the checked state
-            checkColor: checkMarkColor, // Color of the check mark
+            checkColor: checkMarkColor,
+            // Tick color
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            side: const BorderSide(color: Colors.green),// Color of the check mark
             onChanged: (bool? value) {
               if (value == true) {
                 setState(() {

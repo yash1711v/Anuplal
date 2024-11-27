@@ -19,6 +19,7 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   HomeScreenController homeScreenController = Get.put(HomeScreenController());
   ApiService apiService = ApiService();
+  bool isOnlinePaymentSelected = false;
 
   @override
   void initState() {
@@ -71,14 +72,16 @@ class _CartScreenState extends State<CartScreen> {
                       children: [
                         CartItemContainer(
                           imagePath:
-                              '${ApiService().imageBaseUrl}${homeScreenController.shopModel[0].products![index].thumbnail}',
+                          '${ApiService().imageBaseUrl}${homeScreenController
+                              .shopModel[0].products![index].thumbnail}',
                           productName: homeScreenController
                               .shopModel[0].products![index].name,
                           quantity: homeScreenController
                               .shopModel[0].products![index].quantity,
                           price: homeScreenController
                               .shopModel[0].products![index].price,
-                          id: homeScreenController.shopModel[0].products![index].id
+                          id: homeScreenController.shopModel[0].products![index]
+                              .id
                               .toString(),
                           homeScreenController: homeScreenController,
                         ),
@@ -89,9 +92,13 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 Container(
                   height: 150,
-                  child: PaymentOptionsScreen(onPaymentOptionSelected: (bool isCodSelected, bool isPayOnlineSelected) {
-
-                  },
+                  child: PaymentOptionsScreen(
+                    onPaymentOptionSelected: (bool isCodSelected,
+                        bool isPayOnlineSelected) {
+                      setState(() {
+                        isOnlinePaymentSelected = isPayOnlineSelected;
+                      });
+                    },
 
                   ),
                 ),
@@ -99,10 +106,13 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ),
           bottomNavigationBar: SingleChildScrollView(
-            child:  Padding(
+            child: Padding(
               padding: EdgeInsets.only(bottom: 15.0),
               child: PlaceOrderButton(
-                totalAmountValue: homeScreenController.totalPrice.toString(), shopModel: homeScreenController.shopModel, homeScreenController: homeScreenController,
+                totalAmountValue: homeScreenController.totalPrice.toString(),
+                shopModel: homeScreenController.shopModel,
+                homeScreenController: homeScreenController,
+                isOnlinePaymentSelected: isOnlinePaymentSelected,
               ),
             ),
           ),

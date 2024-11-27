@@ -10,10 +10,14 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import '../../../controller/store_controller.dart';
 import '../../../helper/route_helper.dart';
 import '../../../utils/sizeboxes.dart';
 import '../../models/product_model.dart';
 import '../../services/api_services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -25,19 +29,65 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService apiService = ApiService();
   List<PopularProduct> products = [];
+  String address = '';
 
   final HomeScreenController homeScreenController =
       Get.put(HomeScreenController());
   final TextEditingController filter = TextEditingController();
+  StoreController storeController = Get.put(StoreController());
 
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       homeScreenController.fetchProducts(homeScreenController);
       apiService.FetchcartListing(homeScreenController);
+      _setInitialLocation();
     });
+  }
+
+
+  Future<void> _setInitialLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled, you may want to handle this
+      return;
+    }
+
+    // Check for location permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
+        return;
+      }
+    }
+
+    // Get current location
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    _getAddressFromLatLng(position);
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      Placemark place = placemarks[0];
+      setState(() {
+        address =
+        "${place.street}, ${place.locality}, ${place.country}";
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -96,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         Flexible(
                                           child: Text(
-                                            'NEW DELHI',
+                                            address,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: poppinsRegular.copyWith(

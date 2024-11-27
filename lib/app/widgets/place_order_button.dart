@@ -11,7 +11,9 @@ class PlaceOrderButton extends StatelessWidget {
   final String totalAmountValue;
   final List<ShopModel> shopModel;
   final HomeScreenController homeScreenController;
-   const PlaceOrderButton({super.key, required this.totalAmountValue, required this.shopModel, required this.homeScreenController});
+
+  final bool isOnlinePaymentSelected;
+   const PlaceOrderButton({super.key, required this.totalAmountValue, required this.shopModel, required this.homeScreenController, required  this.isOnlinePaymentSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +79,7 @@ class PlaceOrderButton extends StatelessWidget {
               colors: [Color(0xFF4C5829),Color(0xFF739A2B), ],
             ),
             buttonText: "Order", onPressed: () {
-              ApiService().bookOrder(shopModel: shopModel, paymentMethod: true).then((value){
+              ApiService().bookOrder(shopModel: shopModel, paymentMethod: isOnlinePaymentSelected,totalAmountValue:totalAmountValue).then((value){
                 Get.snackbar("Order Placed", "Your order has been placed successfully");
                 ApiService().FetchcartListing(homeScreenController);
               });
