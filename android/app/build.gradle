@@ -57,3 +57,6 @@ flutter {
     source = "../.."
 }
 
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0' // Make sure this line is present and up to date
+}

@@ -14,6 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../helper/route_helper.dart';
 import '../models/cart_model.dart';
 import '../models/community_model.dart';
+import '../models/contactUsModel.dart';
+import '../models/crop_doctor_model.dart';
 import '../models/orders_model.dart';
 import '../models/product_details.dart';
 import '../models/product_model.dart';
@@ -23,7 +25,7 @@ import 'package:mime/mime.dart';
 
 import '../models/profile_model.dart';
 import 'package:http_parser/http_parser.dart';
-// import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 String baseUrl = "https://anup.lab5.invoidea.in/api/";
 
@@ -50,6 +52,8 @@ class ApiService {
   final String comunity = "${baseUrl}comunity";
   final String comunityPost = "${baseUrl}comunity-store";
   final String nearestStore = "${baseUrl}nearest-store";
+  final String cropDoctor = "${baseUrl}crop-doctor";
+  final String contactInfo = "${baseUrl}contact-us";
 
   Future<bool> fetchPopularProducts(
       HomeScreenController homeScreenController) async {
@@ -263,6 +267,10 @@ class ApiService {
       await FetchcartListing(homeScreenController).then((value) {
         return true;
       });
+      Get.showSnackbar(GetSnackBar(
+          title: "Cart",
+          message: "Product added to cart successfully",
+          duration: Duration(seconds: 2)));
       // return true;
     } else {
       throw Exception('Failed to load popular products');
@@ -582,7 +590,7 @@ class ApiService {
     }
   }
 
-  Future<dynamic> bookOrder({required List<ShopModel> shopModel}) async {
+  Future<dynamic> bookOrder({required List<ShopModel> shopModel,required bool paymentMethod}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
     dynamic headers = {
@@ -607,6 +615,9 @@ class ApiService {
       final data = json.decode(response.body);
       debugPrint("CommentOnApi $data");
       if (data['message'].toString().trim() == "Order created successfully") {
+        if(paymentMethod){
+          return data['data'];
+        }
         return true;
       } else {
         return false;
@@ -619,7 +630,8 @@ class ApiService {
   Future<bool> fetchNearestStore(
       {required String latitude,
       required String longitude,
-      required StoreController homeScreenController}) async {
+      required StoreController homeScreenController})
+  async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await prefs.get("token").toString();
     dynamic headers = {
@@ -657,66 +669,103 @@ class ApiService {
     }
   }
 
-  // Razorpay _razorpay = Razorpay();
+  Razorpay _razorpay = Razorpay();
 
-  // void razorpayImplement(AppointmentModel appointment, String orderId,
-  //     String amount, String currency, String key) async {
-  //   try {
-  //     _razorpay.open({
-  //       'key': key,
-  //       'amount': int.parse(amount) * 100, // in the smallest currency sub-unit
-  //       'name': appointment.firstName, // Generate order_id using Orders API
-  //       "order": {
-  //         "id": orderId,
-  //         "entity": 100,
-  //         "amount_paid": 0,
-  //         "amount_due": 0,
-  //         "currency": currency,
-  //         "receipt": "Receipt #20",
-  //         "status": "created",
-  //         "attempts": 0,
-  //       },
-  //       'description': 'Demo',
-  //       'timeout': 300, // in seconds
-  //       'prefill': {'contact': appointment.mobileNo, 'email': "yv48183@gmail.com"}
-  //     });
-  //     // Correct event handlers for success, failure, and external wallet
-  //     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-  //     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-  //     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-  //   } catch (e) {
-  //     debugPrint('Error====>: ${e.toString()}');
-  //     // _razorpay.clear();
-  //   }
-  // }
-  //
-  // void _handlePaymentSuccess(
-  //     PaymentSuccessResponse response,
-  //     ) {
-  //   // Do something when payment succeeds
-  //   Map<String, dynamic> requestBody = {
-  //     "paymentId": "${response.paymentId}",
-  //     "orderId": "${Get.find<AppointmentController>().orderId}",
-  //     "paymentStatus": "success"
-  //   };
-  //   debugPrint("requestBody==> $requestBody");
-  //   debugPrint('EVENT_PAYMENT_SUCCESS: ${response.data}');
-  //
-  //   Get.find<AppointmentController>().postDataBack(requestBody);
-  // }
-  //
-  // void _handlePaymentError(PaymentFailureResponse response) {
-  //   // Do something when payment fails
-  //   debugPrint('EVENT_PAYMENT_ERROR: ${response.code} - ${response.message}');
-  // }
-  //
-  // void _handleExternalWallet(ExternalWalletResponse response) {
-  //   // Do something when an external wallet was selected
-  //   debugPrint('EVENT_EXTERNAL_WALLET: ${response.walletName}');
-  // }
-  //
+  void razorpayImplement(String orderId,
+      String amount, String currency, String key) async {
+    try {
+      _razorpay.open({
+        'key': key,
+        'amount': int.parse(amount) * 100, // in the smallest currency sub-unit
+        'name': "", // Generate order_id using Orders API
+        "order": {
+          "id": orderId,
+          "entity": 100,
+          "amount_paid": 0,
+          "amount_due": 0,
+          "currency": currency,
+          "receipt": "Receipt #20",
+          "status": "created",
+          "attempts": 0,
+        },
+        'description': 'Demo',
+        'timeout': 300, // in seconds
+        'prefill': {'contact': "", 'email': "yv48183@gmail.com"}
+      });
+      // Correct event handlers for success, failure, and external wallet
+      _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+      _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+      _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    } catch (e) {
+      debugPrint('Error====>: ${e.toString()}');
+      // _razorpay.clear();
+    }
+  }
+
+  void _handlePaymentSuccess(
+      PaymentSuccessResponse response,
+      ) {
+    // Do something when payment succeeds
+    Map<String, dynamic> requestBody = {
+      "paymentId": "${response.paymentId}",
+      "orderId": "",
+      "paymentStatus": "success"
+    };
+    debugPrint("requestBody==> $requestBody");
+    debugPrint('EVENT_PAYMENT_SUCCESS: ${response.data}');
+
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    // Do something when payment fails
+    debugPrint('EVENT_PAYMENT_ERROR: ${response.code} - ${response.message}');
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    // Do something when an external wallet was selected
+    debugPrint('EVENT_EXTERNAL_WALLET: ${response.walletName}');
+  }
 
 
+
+  Future<dynamic> getCropDoctor() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = await prefs.get("token").toString();
+
+    dynamic headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer ${token}",
+    };
+
+    final response = await http.get(Uri.parse(cropDoctor), headers: headers);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      CropDoctorModel cropDoctorModel = CropDoctorModel.fromJson(data['data']["generaleSetting"]);
+      return cropDoctorModel;
+    } else {
+      throw Exception('Failed to load get crop doctor');
+    }
+  }
+  Future<dynamic> getContactInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = await prefs.get("token").toString();
+
+    dynamic headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer ${token}",
+    };
+
+    final response = await http.get(Uri.parse(contactInfo), headers: headers);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      ContactInfo info = ContactInfo.fromJson(data['data']);
+      return info;
+    } else {
+      throw Exception('Failed to load get contact info');
+    }
+  }
 
 
 

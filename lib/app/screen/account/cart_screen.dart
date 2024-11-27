@@ -6,6 +6,7 @@ import '../../widgets/custom_appbar.dart';
 import '../../widgets/custom_cart_widget.dart';
 import 'package:get/get.dart';
 
+import '../../widgets/payment_Selection.dart';
 import '../../widgets/place_order_button.dart';
 
 class CartScreen extends StatefulWidget {
@@ -57,32 +58,44 @@ class _CartScreenState extends State<CartScreen> {
           ),
           body: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: homeScreenController.shopModel[0].products!.length,
-              itemBuilder: (context, index) {
-                debugPrint(homeScreenController
-                    .shopModel[0].products![index].quantity
-                    .toString());
-                return Column(
-                  children: [
-                    CartItemContainer(
-                      imagePath:
-                          '${ApiService().imageBaseUrl}${homeScreenController.shopModel[0].products![index].thumbnail}',
-                      productName: homeScreenController
-                          .shopModel[0].products![index].name,
-                      quantity: homeScreenController
-                          .shopModel[0].products![index].quantity,
-                      price: homeScreenController
-                          .shopModel[0].products![index].price,
-                      id: homeScreenController.shopModel[0].products![index].id
-                          .toString(),
-                      homeScreenController: homeScreenController,
-                    ),
-                    const SizedBox(height: 10),
-                  ],
-                );
-              },
+            child: Column(
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: homeScreenController.shopModel[0].products!.length,
+                  itemBuilder: (context, index) {
+                    debugPrint(homeScreenController
+                        .shopModel[0].products![index].quantity
+                        .toString());
+                    return Column(
+                      children: [
+                        CartItemContainer(
+                          imagePath:
+                              '${ApiService().imageBaseUrl}${homeScreenController.shopModel[0].products![index].thumbnail}',
+                          productName: homeScreenController
+                              .shopModel[0].products![index].name,
+                          quantity: homeScreenController
+                              .shopModel[0].products![index].quantity,
+                          price: homeScreenController
+                              .shopModel[0].products![index].price,
+                          id: homeScreenController.shopModel[0].products![index].id
+                              .toString(),
+                          homeScreenController: homeScreenController,
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    );
+                  },
+                ),
+                Container(
+                  height: 150,
+                  child: PaymentOptionsScreen(onPaymentOptionSelected: (bool isCodSelected, bool isPayOnlineSelected) {
+
+                  },
+
+                  ),
+                ),
+              ],
             ),
           ),
           bottomNavigationBar: SingleChildScrollView(

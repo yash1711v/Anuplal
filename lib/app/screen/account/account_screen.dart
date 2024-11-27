@@ -7,6 +7,7 @@ import 'package:anuplal/utils/sizeboxes.dart';
 import 'package:anuplal/utils/styles.dart';
 import 'package:flutter/material.dart';
 
+import '../../widgets/profile_components.dart';
 import '../MyOrdersScreen/my_orders.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -14,64 +15,107 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(125),
           child: CustomAppBar(
             title: 'Account',
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+          child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                sizedBoxDefault(),
-                buildColumn(
-                  tap: () {
-                    Get.toNamed(RouteHelper.getProfileRoute());
-                  },
-                  title: 'Profile',
+                SizedBox(
+                  height: 20,
                 ),
-               SizedBox(height: 26),
-                buildColumn(tap: () {
-                  Get.toNamed(RouteHelper.getmyOrdersRoute());
-                  }, title: 'My Orders'),
-                SizedBox(height: 26),
-                buildColumn(tap: () {
-                  Get.toNamed(RouteHelper.getCartRoute());
-                }, title: 'Cart'),
-                SizedBox(height: 26),
-                buildColumn(tap: () {
-                  Get.toNamed(RouteHelper.getNotificationRoute());
-                }, title: 'Notifications'),
-                SizedBox(height: 26),
-                buildColumn(tap: () {
-                  Get.toNamed(RouteHelper.getCropDoctorRoute());
-      
-                }, title: 'Crop Doctor'),
-                SizedBox(height: 26),
-                buildColumn(tap: () {}, title: 'Location'),
-                SizedBox(height: 26),
-                buildColumn(tap: () {
-                  Get.toNamed(RouteHelper.getContactUsRoute());
-      
-                }, title: 'Contact Us'),
-                SizedBox(height: 26),
-                buildColumn(tap: () {
+                Container(
+                  width: double.infinity,
+                  height: 165,
+                  child: ProfileComponents(
+                    title: const ['Account Details',],
+                    components: const [
+                      'Profile',
+                      'My Orders',
+                    ],
+                    componentsFunctions: [
+                          () {
+                        Get.toNamed(RouteHelper.getProfileRoute());
+                      },
+                          () {
+                        Get.toNamed(RouteHelper.getmyOrdersRoute());
+                      },
 
-                }, title: 'Privacy Policy'),
-                SizedBox(height: 26),
-                buildColumn(tap: () {
-                  Get.toNamed(RouteHelper.aboutUs);
-                }, title: 'About us'),
-                SizedBox(height: 26),
-                buildColumn(tap: () {
-                  Get.toNamed(RouteHelper.termsAndCondition);
-                }, title: 'Terms and Condition'),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 165,
+                  child: ProfileComponents(
+                    title: const ['Know About Us',],
+                    components: const [
+                      'About Us',
+                      'Contact Us',
+                    ],
+                    componentsFunctions: [
+                          () {
+                        Get.toNamed(RouteHelper.aboutUs);
+                      },
+                          () {
+                        Get.toNamed(RouteHelper.getContactUsRoute());
+                      },
+
+                    ],
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 250,
+                  child: ProfileComponents(
+                    title: const ['Links'],
+                    components: const [
+                      'Privacy Policy',
+                      'Terms & Conditions',
+                    ],
+                    componentsFunctions: [
+                          () {
+                        // Get.toNamed(RouteHelper.privacyPolicy);
+                      },
+                          () {
+                        Get.toNamed(RouteHelper.termsAndCondition);
+                      },
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          // Add action here
+                        },
+                        child: Image.asset("assets/images/Facebook.png",scale: 3,)),
+                    GestureDetector(
+                        onTap: () {
+                          // Add action here
+                        },
+                        child: Image.asset("assets/images/Instagram.png",scale: 3,)),
+                    GestureDetector(
+                        onTap: () {
+                          // Add action here
+                        },
+                        child: Image.asset("assets/images/Twitter.png",scale: 3,)),
+                  ],
+                ),
               ],
             ),
           ),

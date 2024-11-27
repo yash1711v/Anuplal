@@ -77,7 +77,7 @@ class PlaceOrderButton extends StatelessWidget {
               colors: [Color(0xFF4C5829),Color(0xFF739A2B), ],
             ),
             buttonText: "Order", onPressed: () {
-              ApiService().bookOrder(shopModel: shopModel).then((value){
+              ApiService().bookOrder(shopModel: shopModel, paymentMethod: true).then((value){
                 Get.snackbar("Order Placed", "Your order has been placed successfully");
                 ApiService().FetchcartListing(homeScreenController);
               });
